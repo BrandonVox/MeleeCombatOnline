@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 AMCOCharacter_Player::AMCOCharacter_Player()
@@ -27,4 +29,36 @@ void AMCOCharacter_Player::BeginPlay()
 void AMCOCharacter_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AMCOCharacter_Player::PawnClientRestart()
+{
+	Super::PawnClientRestart();
+	/*
+	 * Player controller -> Pawn/Character
+	 * Local Player -> Player Controller -> Pawn/Character
+	 * Camera / Input bindings
+	 * Client machines
+	 * Listen server, 
+	 * Add Input Mapping Context by Local Player
+	 */
+
+	SetupInputMappingContext();
+}
+
+void AMCOCharacter_Player::SetupInputMappingContext() const
+{
+	if (APlayerController* MyPlayerController = GetController<APlayerController>())
+	{
+		ULocalPlayer* MyLocalPlayer = MyPlayerController->GetLocalPlayer();
+
+		UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
+			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MyLocalPlayer);
+
+		if (InputSubsystem)
+		{
+			InputSubsystem->RemoveMappingContext(MyInputMappingContext);
+			InputSubsystem->AddMappingContext(MyInputMappingContext, 0);
+		}
+	}
 }
