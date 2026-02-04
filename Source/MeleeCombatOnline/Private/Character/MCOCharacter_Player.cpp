@@ -8,6 +8,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMCOCharacter_Player::AMCOCharacter_Player()
@@ -17,9 +18,15 @@ AMCOCharacter_Player::AMCOCharacter_Player()
 
 	SpringArmComponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
-	
+
 	SpringArmComponent->bUsePawnControlRotation = true;
 	CameraComponent->bUsePawnControlRotation = false;
+	
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -47,6 +54,13 @@ void AMCOCharacter_Player::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 			ETriggerEvent::Triggered,
 			this,
 			&AMCOCharacter_Player::Input_Triggered_Look
+		);
+
+		EnhancedInputComponent->BindAction(
+			InputAction_Move,
+			ETriggerEvent::Triggered,
+			this,
+			&AMCOCharacter_Player::Input_Triggered_Move
 		);
 	}
 }
@@ -92,7 +106,23 @@ void AMCOCharacter_Player::Input_Triggered_Jump()
 void AMCOCharacter_Player::Input_Triggered_Look(const FInputActionValue& InputActionValue)
 {
 	const FVector2D InputValue2D = InputActionValue.Get<FVector2D>();
-	
+
 	AddControllerYawInput(InputValue2D.X);
 	AddControllerPitchInput(InputValue2D.Y);
+}
+
+void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputActionValue)
+{
+	const FVector2D InputValue2D = InputActionValue.Get<FVector2D>().GetClampedToMaxSize(1.f);
+	
+	UE_LOG(LogTemp, Warning, TEXT("Input Mag = %f"), InputValue2D.Length());
+	
+	// input value X Y
+
+	const FVector RightDirection = CameraComponent->GetRightVector();
+	const FVector ForwardDirection = FVector::CrossProduct(RightDirection, FVector::UpVector).GetSafeNormal();
+	
+	
+	AddMovementInput(RightDirection, InputValue2D.X);
+	AddMovementInput(ForwardDirection, InputValue2D.Y);
 }
