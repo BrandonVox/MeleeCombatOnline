@@ -27,6 +27,7 @@ protected:
 	
 private: // Function
 	void SetupInputMappingContext() const;
+	void Input_Triggered_Jump();
 	
 private: // Property
 	UPROPERTY(VisibleDefaultsOnly)
@@ -40,6 +41,4 @@ private: // Property
 	
 	UPROPERTY(EditDefaultsOnly, Category= "MCO Settings | Input")
 	TObjectPtr<UInputAction> InputAction_Jump;
-	
-
 };

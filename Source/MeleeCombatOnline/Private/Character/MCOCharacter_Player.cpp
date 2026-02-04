@@ -29,6 +29,16 @@ void AMCOCharacter_Player::BeginPlay()
 void AMCOCharacter_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(
+			InputAction_Jump,
+			ETriggerEvent::Triggered,
+			this,
+			&AMCOCharacter_Player::Input_Triggered_Jump
+		);
+	}
 }
 
 void AMCOCharacter_Player::PawnClientRestart()
@@ -61,4 +71,10 @@ void AMCOCharacter_Player::SetupInputMappingContext() const
 			InputSubsystem->AddMappingContext(MyInputMappingContext, 0);
 		}
 	}
+}
+
+void AMCOCharacter_Player::Input_Triggered_Jump()
+{
+	Jump();
+	UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Jump"));
 }
