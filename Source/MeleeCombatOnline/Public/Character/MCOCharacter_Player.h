@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "MCOCharacter.h"
 #include "MCOCharacter_Player.generated.h"
 
@@ -28,6 +29,7 @@ protected:
 private: // Function
 	void SetupInputMappingContext() const;
 	void Input_Triggered_Jump();
+	void Input_Triggered_Look(const FInputActionValue& InputActionValue);
 	
 private: // Property
 	UPROPERTY(VisibleDefaultsOnly)
@@ -41,4 +43,7 @@ private: // Property
 	
 	UPROPERTY(EditDefaultsOnly, Category= "MCO Settings | Input")
 	TObjectPtr<UInputAction> InputAction_Jump;
+	
+	UPROPERTY(EditDefaultsOnly, Category= "MCO Settings | Input")
+	TObjectPtr<UInputAction> InputAction_Look;
 };

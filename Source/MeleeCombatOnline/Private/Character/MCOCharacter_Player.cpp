@@ -17,6 +17,9 @@ AMCOCharacter_Player::AMCOCharacter_Player()
 
 	SpringArmComponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
+	
+	SpringArmComponent->bUsePawnControlRotation = true;
+	CameraComponent->bUsePawnControlRotation = false;
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +40,13 @@ void AMCOCharacter_Player::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 			ETriggerEvent::Triggered,
 			this,
 			&AMCOCharacter_Player::Input_Triggered_Jump
+		);
+
+		EnhancedInputComponent->BindAction(
+			InputAction_Look,
+			ETriggerEvent::Triggered,
+			this,
+			&AMCOCharacter_Player::Input_Triggered_Look
 		);
 	}
 }
@@ -77,4 +87,12 @@ void AMCOCharacter_Player::Input_Triggered_Jump()
 {
 	Jump();
 	UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Jump"));
+}
+
+void AMCOCharacter_Player::Input_Triggered_Look(const FInputActionValue& InputActionValue)
+{
+	const FVector2D InputValue2D = InputActionValue.Get<FVector2D>();
+	
+	AddControllerYawInput(InputValue2D.X);
+	AddControllerPitchInput(InputValue2D.Y);
 }
