@@ -100,7 +100,6 @@ void AMCOCharacter_Player::SetupInputMappingContext() const
 void AMCOCharacter_Player::Input_Triggered_Jump()
 {
 	Jump();
-	UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Jump"));
 }
 
 void AMCOCharacter_Player::Input_Triggered_Look(const FInputActionValue& InputActionValue)
@@ -115,7 +114,6 @@ void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputAc
 {
 	const FVector2D InputValue2D = InputActionValue.Get<FVector2D>().GetClampedToMaxSize(1.f);
 	
-	UE_LOG(LogTemp, Warning, TEXT("Input Mag = %f"), InputValue2D.Length());
 	
 	// input value X Y
 
