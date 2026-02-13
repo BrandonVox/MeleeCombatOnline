@@ -12,13 +12,13 @@ class MELEECOMBATONLINE_API UMCOAttackComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:	// Function
 	// Sets default values for this component's properties
 	UMCOAttackComponent();
+	void LocalInputPressed();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-		
 };

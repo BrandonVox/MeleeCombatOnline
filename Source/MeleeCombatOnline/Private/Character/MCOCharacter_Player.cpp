@@ -8,6 +8,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Component/MCOAttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -21,11 +22,11 @@ AMCOCharacter_Player::AMCOCharacter_Player()
 
 	SpringArmComponent->bUsePawnControlRotation = true;
 	CameraComponent->bUsePawnControlRotation = false;
-	
+
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
@@ -61,6 +62,13 @@ void AMCOCharacter_Player::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 			ETriggerEvent::Triggered,
 			this,
 			&AMCOCharacter_Player::Input_Triggered_Move
+		);
+
+		EnhancedInputComponent->BindAction(
+			InputAction_Attack,
+			ETriggerEvent::Triggered,
+			this,
+			&AMCOCharacter_Player::Input_Triggered_Attack
 		);
 	}
 }
@@ -113,14 +121,23 @@ void AMCOCharacter_Player::Input_Triggered_Look(const FInputActionValue& InputAc
 void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputActionValue)
 {
 	const FVector2D InputValue2D = InputActionValue.Get<FVector2D>().GetClampedToMaxSize(1.f);
-	
-	
+
+
 	// input value X Y
 
 	const FVector RightDirection = CameraComponent->GetRightVector();
 	const FVector ForwardDirection = FVector::CrossProduct(RightDirection, FVector::UpVector).GetSafeNormal();
-	
-	
+
+
 	AddMovementInput(RightDirection, InputValue2D.X);
 	AddMovementInput(ForwardDirection, InputValue2D.Y);
+}
+
+void AMCOCharacter_Player::Input_Triggered_Attack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Attack"));
+	if (AttackComponent)
+	{
+		AttackComponent->LocalInputPressed();
+	}
 }
