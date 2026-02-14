@@ -28,5 +28,16 @@ void UMCOAttackComponent::LocalInputPressed()
 void UMCOAttackComponent::TryAttack()
 {
 	// Play Montage
-	GetOwner<ACharacter>()->PlayAnimMontage(Montages_Attack[0]);
+	GetOwner<ACharacter>()->PlayAnimMontage(Montages_Attack[AttackIndex]);
+	IncreaseAttackIndex();
+}
+
+void UMCOAttackComponent::IncreaseAttackIndex()
+{
+	++AttackIndex;
+	
+	if (AttackIndex >= Montages_Attack.Num())
+	{
+		AttackIndex = 0;
+	}
 }

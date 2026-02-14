@@ -23,8 +23,11 @@ protected:
 
 private: // Function
 	void TryAttack();
+	void IncreaseAttackIndex();
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
 	TArray<TObjectPtr<UAnimMontage>> Montages_Attack;
+	
+	uint8 AttackIndex = 0;
 };
