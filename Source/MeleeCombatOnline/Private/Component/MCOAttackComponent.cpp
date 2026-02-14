@@ -54,3 +54,9 @@ void UMCOAttackComponent::IncreaseAttackIndex()
 		AttackIndex = 0;
 	}
 }
+
+void UMCOAttackComponent::EndAttack()
+{
+	bIsAttacking = false;
+}
+

@@ -16,6 +16,7 @@ public: // Function
 	// Sets default values for this component's properties
 	UMCOAttackComponent();
 	void LocalInputPressed();
+	void EndAttack();
 
 protected:
 	// Called when the game starts
