@@ -98,3 +98,11 @@ bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
 {
 	return InActor && InActor->HasAuthority();
 }
+
+void UMCOAttackComponent::OnRep_bIsAttacking()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnRep_bIsAttacking"));
+	// new value bisattacking
+	// react to the change of bisattacking from client
+	OnSet_bIsAttacking();
+}
