@@ -35,7 +35,7 @@ private: // Function
 	static bool HasAuthority(const AActor* InActor);
 	
 	UFUNCTION()
-	void OnRep_bIsAttacking();
+	void OnRep_bIsAttacking(bool bOldValue);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
