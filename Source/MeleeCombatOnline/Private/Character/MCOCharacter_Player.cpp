@@ -135,7 +135,7 @@ void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputAc
 
 void AMCOCharacter_Player::Input_Triggered_Attack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Attack"));
+	// UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Attack"));
 	if (AttackComponent)
 	{
 		AttackComponent->LocalInputPressed();

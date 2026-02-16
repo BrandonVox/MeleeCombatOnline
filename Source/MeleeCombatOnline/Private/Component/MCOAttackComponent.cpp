@@ -9,7 +9,6 @@
 UMCOAttackComponent::UMCOAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 void UMCOAttackComponent::BeginPlay()
@@ -17,11 +16,24 @@ void UMCOAttackComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 void UMCOAttackComponent::LocalInputPressed()
 {
+	// Listen Server
+	if (HasAuthority(GetOwner()))
+	{
+		TryAttack();
+		return;
+	}
+
+	// Client
+	Server_TryAttack();
+}
+
+void UMCOAttackComponent::Server_TryAttack_Implementation()
+{
+	// only run server
 	TryAttack();
 }
 
@@ -31,9 +43,12 @@ void UMCOAttackComponent::TryAttack()
 	{
 		return;
 	}
-	
-	bIsAttacking = true;
-	OnSet_bIsAttacking();
+
+	if (HasAuthority(GetOwner()))
+	{
+		bIsAttacking = true;
+		OnSet_bIsAttacking();
+	}
 }
 
 void UMCOAttackComponent::OnSet_bIsAttacking()
@@ -48,7 +63,7 @@ void UMCOAttackComponent::OnSet_bIsAttacking()
 void UMCOAttackComponent::IncreaseAttackIndex()
 {
 	++AttackIndex;
-	
+
 	if (AttackIndex >= Montages_Attack.Num())
 	{
 		AttackIndex = 0;
@@ -57,6 +72,14 @@ void UMCOAttackComponent::IncreaseAttackIndex()
 
 void UMCOAttackComponent::EndAttack()
 {
-	bIsAttacking = false;
+	if (HasAuthority(GetOwner()))
+	{
+		bIsAttacking = false;
+		OnSet_bIsAttacking();
+	}
 }
 
+bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
+{
+	return InActor && InActor->HasAuthority();
+}

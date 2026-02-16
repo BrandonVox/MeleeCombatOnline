@@ -23,9 +23,12 @@ protected:
 	virtual void BeginPlay() override;
 
 private: // Function
+	UFUNCTION(Server, Reliable)
+	void Server_TryAttack();
 	void TryAttack();
 	void OnSet_bIsAttacking();
 	void IncreaseAttackIndex();
+	static bool HasAuthority(const AActor* InActor);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
