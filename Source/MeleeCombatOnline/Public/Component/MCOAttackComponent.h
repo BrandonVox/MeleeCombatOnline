@@ -15,6 +15,10 @@ class MELEECOMBATONLINE_API UMCOAttackComponent : public UActorComponent
 public: // Function
 	// Sets default values for this component's properties
 	UMCOAttackComponent();
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	
 	void LocalInputPressed();
 	void EndAttack();
 
@@ -29,11 +33,17 @@ private: // Function
 	void OnSet_bIsAttacking();
 	void IncreaseAttackIndex();
 	static bool HasAuthority(const AActor* InActor);
+	
+	UFUNCTION()
+	void OnRep_bIsAttacking();
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
 	TArray<TObjectPtr<UAnimMontage>> Montages_Attack;
 	
+	UPROPERTY(ReplicatedUsing = OnRep_bIsAttacking)
 	bool bIsAttacking = false;
+	
+	
 	uint8 AttackIndex = 0;
 };

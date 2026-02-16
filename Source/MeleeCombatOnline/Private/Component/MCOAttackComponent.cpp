@@ -4,11 +4,26 @@
 #include "Component/MCOAttackComponent.h"
 
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UMCOAttackComponent::UMCOAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	
+	SetIsReplicatedByDefault(true);
+}
+
+void UMCOAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(UMCOAttackComponent, bIsAttacking);
+	
+	// bisattacking -> replicate
+	// attack component -> replicate
+	// MCO Character -> replicate
+	
 }
 
 void UMCOAttackComponent::BeginPlay()
