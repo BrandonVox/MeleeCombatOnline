@@ -13,7 +13,6 @@ class MELEECOMBATONLINE_API UMCOAttackComponent : public UActorComponent
 	GENERATED_BODY()
 
 public: // Function
-	// Sets default values for this component's properties
 	UMCOAttackComponent();
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -23,7 +22,6 @@ public: // Function
 	void EndAttack();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private: // Function
