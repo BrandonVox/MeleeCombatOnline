@@ -15,7 +15,7 @@ struct FAttackState
 	bool bIsAttacking = false;
 
 	UPROPERTY(EditAnywhere)
-	uint8 AttackIndex = 0;
+	uint16 AttackCount = 0;
 };
 
 
@@ -40,8 +40,8 @@ private: // Function
 	UFUNCTION(Server, Reliable)
 	void Server_TryAttack();
 	void TryAttack();
-	void HandleCurrentStateChanged();
-	void IncreaseAttackIndex();
+	void HandleCurrentStateChanged(const FAttackState& OldState);
+	UAnimMontage* GetAttackMontage(const uint16 InAttackCount) const;
 	static bool HasAuthority(const AActor* InActor);
 	
 	UFUNCTION()

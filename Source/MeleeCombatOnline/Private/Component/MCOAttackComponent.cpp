@@ -16,19 +16,18 @@ UMCOAttackComponent::UMCOAttackComponent()
 void UMCOAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME_CONDITION_NOTIFY(UMCOAttackComponent, CurrentState, COND_None, REPNOTIFY_OnChanged);
 }
 
 void UMCOAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (!HasAuthority(GetOwner()))
 	{
-		IncreaseAttackIndex();
+		// CurrentState.AttackCount = 3;
 	}
-	
 }
 
 void UMCOAttackComponent::LocalInputPressed()
@@ -58,39 +57,49 @@ void UMCOAttackComponent::TryAttack()
 
 	if (HasAuthority(GetOwner()))
 	{
+		FAttackState OldState = CurrentState;
 		CurrentState.bIsAttacking = true;
-		HandleCurrentStateChanged();
+		++CurrentState.AttackCount;
+		HandleCurrentStateChanged(OldState);
 		// is attacking = true
 		// index = 1
 		// attack count!!
 	}
 }
 
-void UMCOAttackComponent::HandleCurrentStateChanged()
+void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState)
 {
-	if (CurrentState.bIsAttacking)
+	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
 	{
-		GetOwner<ACharacter>()->PlayAnimMontage(Montages_Attack[CurrentState.AttackIndex]);
-		IncreaseAttackIndex();
+		UE_LOG(LogTemp, Warning, TEXT("Attack/Count = %d"), CurrentState.AttackCount);
+		GetOwner<ACharacter>()->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount));
 	}
 }
 
-void UMCOAttackComponent::IncreaseAttackIndex()
+UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount) const
 {
-	++CurrentState.AttackIndex;
-
-	if (CurrentState.AttackIndex >= Montages_Attack.Num())
+	if (InAttackCount == 0)
 	{
-		CurrentState.AttackIndex = 0;
+		return nullptr;
 	}
+
+	if (Montages_Attack.IsEmpty())
+	{
+		return nullptr;
+	}
+
+	const uint16 CalculatedIndex = (InAttackCount - 1) % Montages_Attack.Num();
+
+	return Montages_Attack[CalculatedIndex];
 }
 
 void UMCOAttackComponent::EndAttack()
 {
 	if (HasAuthority(GetOwner()))
 	{
+		FAttackState OldState = CurrentState;
 		CurrentState.bIsAttacking = false;
-		HandleCurrentStateChanged();
+		HandleCurrentStateChanged(OldState);
 	}
 }
 
@@ -101,5 +110,5 @@ bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
 
 void UMCOAttackComponent::OnRep_CurrentState(const FAttackState& OldState)
 {
-	HandleCurrentStateChanged();
+	HandleCurrentStateChanged(OldState);
 }
