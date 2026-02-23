@@ -17,12 +17,18 @@ void UMCOAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	DOREPLIFETIME_CONDITION_NOTIFY(UMCOAttackComponent, bIsAttacking, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMCOAttackComponent, CurrentState, COND_None, REPNOTIFY_OnChanged);
 }
 
 void UMCOAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (!HasAuthority(GetOwner()))
+	{
+		IncreaseAttackIndex();
+	}
+	
 }
 
 void UMCOAttackComponent::LocalInputPressed()
@@ -45,34 +51,37 @@ void UMCOAttackComponent::Server_TryAttack_Implementation()
 
 void UMCOAttackComponent::TryAttack()
 {
-	if (bIsAttacking)
+	if (CurrentState.bIsAttacking)
 	{
 		return;
 	}
 
 	if (HasAuthority(GetOwner()))
 	{
-		bIsAttacking = true;
-		OnSet_bIsAttacking();
+		CurrentState.bIsAttacking = true;
+		HandleCurrentStateChanged();
+		// is attacking = true
+		// index = 1
+		// attack count!!
 	}
 }
 
-void UMCOAttackComponent::OnSet_bIsAttacking()
+void UMCOAttackComponent::HandleCurrentStateChanged()
 {
-	if (bIsAttacking)
+	if (CurrentState.bIsAttacking)
 	{
-		GetOwner<ACharacter>()->PlayAnimMontage(Montages_Attack[AttackIndex]);
+		GetOwner<ACharacter>()->PlayAnimMontage(Montages_Attack[CurrentState.AttackIndex]);
 		IncreaseAttackIndex();
 	}
 }
 
 void UMCOAttackComponent::IncreaseAttackIndex()
 {
-	++AttackIndex;
+	++CurrentState.AttackIndex;
 
-	if (AttackIndex >= Montages_Attack.Num())
+	if (CurrentState.AttackIndex >= Montages_Attack.Num())
 	{
-		AttackIndex = 0;
+		CurrentState.AttackIndex = 0;
 	}
 }
 
@@ -80,8 +89,8 @@ void UMCOAttackComponent::EndAttack()
 {
 	if (HasAuthority(GetOwner()))
 	{
-		bIsAttacking = false;
-		OnSet_bIsAttacking();
+		CurrentState.bIsAttacking = false;
+		HandleCurrentStateChanged();
 	}
 }
 
@@ -90,12 +99,7 @@ bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
 	return InActor && InActor->HasAuthority();
 }
 
-void UMCOAttackComponent::OnRep_bIsAttacking(bool bOldValue)
+void UMCOAttackComponent::OnRep_CurrentState(const FAttackState& OldState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnRep_bIsAttacking"));
-
-	if (bIsAttacking != bOldValue)
-	{
-		OnSet_bIsAttacking();
-	}
+	HandleCurrentStateChanged();
 }
