@@ -50,7 +50,7 @@ void UMCOAttackComponent::Server_TryAttack_Implementation()
 
 void UMCOAttackComponent::TryAttack()
 {
-	if (CurrentState.bIsAttacking)
+	if (!CanAttack())
 	{
 		return;
 	}
@@ -59,12 +59,28 @@ void UMCOAttackComponent::TryAttack()
 	{
 		FAttackState OldState = CurrentState;
 		CurrentState.bIsAttacking = true;
+		CurrentState.bComboWindowOpened = false;
 		++CurrentState.AttackCount;
 		HandleCurrentStateChanged(OldState);
 		// is attacking = true
 		// index = 1
 		// attack count!!
 	}
+}
+
+bool UMCOAttackComponent::CanAttack() const
+{
+	if (!CurrentState.bIsAttacking)
+	{
+		return true;
+	}
+	
+	if (CurrentState.bComboWindowOpened)
+	{
+		return true;
+	}
+	
+	return false;
 }
 
 void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState)
@@ -93,12 +109,27 @@ UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount) 
 	return Montages_Attack[CalculatedIndex];
 }
 
+void UMCOAttackComponent::OpenComboWindow()
+{
+	if (HasAuthority(GetOwner()))
+	{
+		FAttackState OldState = CurrentState;
+		
+		CurrentState.bComboWindowOpened = true;
+		
+		HandleCurrentStateChanged(OldState);
+	}
+}
+
 void UMCOAttackComponent::EndAttack()
 {
 	if (HasAuthority(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
+		
 		CurrentState.bIsAttacking = false;
+		CurrentState.bComboWindowOpened = false;
+		
 		HandleCurrentStateChanged(OldState);
 	}
 }

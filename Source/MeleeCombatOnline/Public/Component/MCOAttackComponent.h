@@ -16,6 +16,9 @@ struct FAttackState
 
 	UPROPERTY(EditAnywhere)
 	uint16 AttackCount = 0;
+	
+	UPROPERTY(EditAnywhere)
+	bool bComboWindowOpened = false;
 };
 
 
@@ -31,6 +34,7 @@ public: // Function
 
 
 	void LocalInputPressed();
+	void OpenComboWindow();
 	void EndAttack();
 
 protected:
@@ -40,6 +44,7 @@ private: // Function
 	UFUNCTION(Server, Reliable)
 	void Server_TryAttack();
 	void TryAttack();
+	bool CanAttack() const;
 	void HandleCurrentStateChanged(const FAttackState& OldState);
 	UAnimMontage* GetAttackMontage(const uint16 InAttackCount) const;
 	static bool HasAuthority(const AActor* InActor);
