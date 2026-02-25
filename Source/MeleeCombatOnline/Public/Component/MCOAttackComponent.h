@@ -13,12 +13,12 @@ struct FAttackState
 
 	UPROPERTY(EditAnywhere)
 	bool bIsAttacking = false;
-
-	UPROPERTY(EditAnywhere)
-	uint16 AttackCount = 0;
 	
 	UPROPERTY(EditAnywhere)
 	bool bComboWindowOpened = false;
+
+	UPROPERTY(EditAnywhere)
+	uint16 AttackCount = 0;
 };
 
 

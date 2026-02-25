@@ -26,7 +26,6 @@ void UMCOAttackComponent::BeginPlay()
 
 	if (!HasAuthority(GetOwner()))
 	{
-		// CurrentState.AttackCount = 3;
 	}
 }
 
@@ -58,13 +57,12 @@ void UMCOAttackComponent::TryAttack()
 	if (HasAuthority(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
+		
 		CurrentState.bIsAttacking = true;
 		CurrentState.bComboWindowOpened = false;
 		++CurrentState.AttackCount;
+		
 		HandleCurrentStateChanged(OldState);
-		// is attacking = true
-		// index = 1
-		// attack count!!
 	}
 }
 
@@ -87,7 +85,6 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 {
 	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attack/Count = %d"), CurrentState.AttackCount);
 		GetOwner<ACharacter>()->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount));
 	}
 }
