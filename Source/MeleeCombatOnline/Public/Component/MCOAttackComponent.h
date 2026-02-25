@@ -19,6 +19,9 @@ struct FAttackState
 
 	UPROPERTY(EditAnywhere)
 	uint16 AttackCount = 0;
+	
+	UPROPERTY(EditAnywhere)
+	uint16 IndexOffset = 1;
 };
 
 
@@ -46,7 +49,7 @@ private: // Function
 	void TryAttack();
 	bool CanAttack() const;
 	void HandleCurrentStateChanged(const FAttackState& OldState);
-	UAnimMontage* GetAttackMontage(const uint16 InAttackCount) const;
+	UAnimMontage* GetAttackMontage(const uint16 InAttackCount, const uint16 IndexOffset) const;
 	static bool HasAuthority(const AActor* InActor);
 	
 	UFUNCTION()

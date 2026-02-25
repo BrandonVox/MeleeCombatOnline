@@ -57,11 +57,11 @@ void UMCOAttackComponent::TryAttack()
 	if (HasAuthority(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
-		
+
 		CurrentState.bIsAttacking = true;
 		CurrentState.bComboWindowOpened = false;
 		++CurrentState.AttackCount;
-		
+
 		HandleCurrentStateChanged(OldState);
 	}
 }
@@ -72,12 +72,12 @@ bool UMCOAttackComponent::CanAttack() const
 	{
 		return true;
 	}
-	
+
 	if (CurrentState.bComboWindowOpened)
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -85,11 +85,11 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 {
 	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
 	{
-		GetOwner<ACharacter>()->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount));
+		GetOwner<ACharacter>()->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
 	}
 }
 
-UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount) const
+UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount, const uint16 IndexOffset) const
 {
 	if (InAttackCount == 0)
 	{
@@ -101,7 +101,7 @@ UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount) 
 		return nullptr;
 	}
 
-	const uint16 CalculatedIndex = (InAttackCount - 1) % Montages_Attack.Num();
+	const uint16 CalculatedIndex = (InAttackCount - IndexOffset) % Montages_Attack.Num();
 
 	return Montages_Attack[CalculatedIndex];
 }
@@ -111,9 +111,9 @@ void UMCOAttackComponent::OpenComboWindow()
 	if (HasAuthority(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
-		
+
 		CurrentState.bComboWindowOpened = true;
-		
+
 		HandleCurrentStateChanged(OldState);
 	}
 }
@@ -123,10 +123,12 @@ void UMCOAttackComponent::EndAttack()
 	if (HasAuthority(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
-		
+
 		CurrentState.bIsAttacking = false;
 		CurrentState.bComboWindowOpened = false;
-		
+		// Reset Attack Index -> 0
+		CurrentState.IndexOffset = CurrentState.AttackCount + 1;
+
 		HandleCurrentStateChanged(OldState);
 	}
 }
