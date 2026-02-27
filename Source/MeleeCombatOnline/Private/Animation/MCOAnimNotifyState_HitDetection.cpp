@@ -3,7 +3,7 @@
 
 #include "Animation/MCOAnimNotifyState_HitDetection.h"
 
-#include "Kismet/KismetSystemLibrary.h"
+#include "Component/MCOAttackComponent.h"
 
 UMCOAnimNotifyState_HitDetection::UMCOAnimNotifyState_HitDetection()
 {
@@ -21,37 +21,42 @@ void UMCOAnimNotifyState_HitDetection::NotifyBegin(USkeletalMeshComponent* MeshC
                                                    float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-}
+	
+	if (!MeshComp)
+	{
+		return;
+	}
 
-void UMCOAnimNotifyState_HitDetection::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-                                                  float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
-{
-	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+	if (!MeshComp->GetOwner())
+	{
+		return;
+	}
 
-	// FVector TraceStart;
-	// FVector TraceEnd;
-	// float TraceRadius;
-	// TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
-	// TArray<AActor*> ActorsToIgnore;
-	// EDrawDebugTrace::Type TraceDebugType;
-	// TArray<FHitResult> HitResults;
-	// UKismetSystemLibrary::SphereTraceMultiForObjects
-	// (
-	// 	MeshComp->GetOwner(),
-	// 	TraceStart,
-	// 	TraceEnd,
-	// 	TraceRadius,
-	// 	TraceObjectTypes,
-	// 	false,
-	// 	ActorsToIgnore,
-	// 	TraceDebugType,
-	// 	HitResults,
-	// 	true
-	// );
+	UMCOAttackComponent* OwnerAttackComponent = MeshComp->GetOwner()->FindComponentByClass<UMCOAttackComponent>();
+	if (OwnerAttackComponent)
+	{
+		OwnerAttackComponent->BeginHitDetection();
+	}
 }
 
 void UMCOAnimNotifyState_HitDetection::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                                  const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
+	
+	if (!MeshComp)
+	{
+		return;
+	}
+
+	if (!MeshComp->GetOwner())
+	{
+		return;
+	}
+
+	UMCOAttackComponent* OwnerAttackComponent = MeshComp->GetOwner()->FindComponentByClass<UMCOAttackComponent>();
+	if (OwnerAttackComponent)
+	{
+		OwnerAttackComponent->EndHitDetection();
+	}
 }
