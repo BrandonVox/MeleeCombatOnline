@@ -4,20 +4,25 @@
 #include "Character/MCOCharacter.h"
 
 #include "Component/MCOAttackComponent.h"
+#include "Components/CapsuleComponent.h"
 
 AMCOCharacter::AMCOCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	bReplicates = true;
 	
-	// replication
-	// character on server send update to clients
-	// how many times in 1 second
+	bReplicates = true;
 	SetMinNetUpdateFrequency(30.f);
 	SetNetUpdateFrequency(100.f);
-	// 30 -> 100 updates per second
 	
 	AttackComponent = CreateDefaultSubobject<UMCOAttackComponent>(TEXT("Attack Component"));
+	
+	// Ignore Camera
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	
+	
+	// Disable Mesh collision
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AMCOCharacter::BeginPlay()

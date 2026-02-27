@@ -5,8 +5,13 @@
 
 #include "Component/MCOAttackComponent.h"
 
+UMCOAnimNotify_EndAttack::UMCOAnimNotify_EndAttack()
+{
+	// bIsNativeBranchingPoint = true;
+}
+
 void UMCOAnimNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-                                      const FAnimNotifyEventReference& EventReference)
+	const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 	
@@ -14,15 +19,16 @@ void UMCOAnimNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	{
 		return;
 	}
-	
+
 	if (!MeshComp->GetOwner())
 	{
 		return;
 	}
-	
+
 	UMCOAttackComponent* OwnerAttackComponent = MeshComp->GetOwner()->FindComponentByClass<UMCOAttackComponent>();
 	if (OwnerAttackComponent)
 	{
+		// UE_LOG(LogTemp, Warning, TEXT("Notify End Attack"));
 		OwnerAttackComponent->EndAttack();
 	}
 }

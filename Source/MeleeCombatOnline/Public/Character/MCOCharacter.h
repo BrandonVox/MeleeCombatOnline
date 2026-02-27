@@ -8,7 +8,7 @@
 
 class UMCOAttackComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class MELEECOMBATONLINE_API AMCOCharacter : public ACharacter
 {
 	GENERATED_BODY()

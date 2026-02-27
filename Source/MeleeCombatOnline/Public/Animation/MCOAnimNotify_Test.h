@@ -4,18 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "MCOAnimNotify_EndAttack.generated.h"
+#include "MCOAnimNotify_Test.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MELEECOMBATONLINE_API UMCOAnimNotify_EndAttack : public UAnimNotify
+class MELEECOMBATONLINE_API UMCOAnimNotify_Test : public UAnimNotify
 {
 	GENERATED_BODY()
 
 public:
-	UMCOAnimNotify_EndAttack();
+	UMCOAnimNotify_Test();
+
+	virtual void BranchingPointNotify(FBranchingPointNotifyPayload& BranchingPointPayload) override;
+
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	                    const FAnimNotifyEventReference& EventReference) override;
 };
