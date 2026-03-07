@@ -18,9 +18,6 @@ struct FAttackState
 	bool bComboWindowOpened = false;
 
 	UPROPERTY(EditAnywhere)
-	bool bHitDetectionWindowOpened = false;
-
-	UPROPERTY(EditAnywhere)
 	uint16 AttackCount = 0;
 
 	UPROPERTY(EditAnywhere)
@@ -44,8 +41,8 @@ public: // Function
 	void LocalInputPressed();
 
 	void BeginHitDetection();
-	void HitDetectionTick();
 	void EndHitDetection();
+	void TickHitDetection();
 
 	void OpenComboWindow();
 	void EndAttack();

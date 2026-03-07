@@ -60,3 +60,25 @@ void UMCOAnimNotifyState_HitDetection::NotifyEnd(USkeletalMeshComponent* MeshCom
 		OwnerAttackComponent->EndHitDetection();
 	}
 }
+
+void UMCOAnimNotifyState_HitDetection::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+	float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+	
+	if (!MeshComp)
+	{
+		return;
+	}
+
+	if (!MeshComp->GetOwner())
+	{
+		return;
+	}
+
+	UMCOAttackComponent* OwnerAttackComponent = MeshComp->GetOwner()->FindComponentByClass<UMCOAttackComponent>();
+	if (OwnerAttackComponent)
+	{
+		OwnerAttackComponent->TickHitDetection();
+	}
+}

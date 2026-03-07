@@ -8,7 +8,7 @@
 
 UMCOAttackComponent::UMCOAttackComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	SetIsReplicatedByDefault(true);
 }
@@ -23,21 +23,12 @@ void UMCOAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 void UMCOAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!HasAuthority(GetOwner()))
-	{
-	}
 }
 
 void UMCOAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (CurrentState.bHitDetectionWindowOpened)
-	{
-		HitDetectionTick();
-	}
 }
 
 void UMCOAttackComponent::LocalInputPressed()
@@ -123,10 +114,9 @@ UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount, 
 void UMCOAttackComponent::BeginHitDetection()
 {
 	FrameCount = 0;
-	CurrentState.bHitDetectionWindowOpened = true;
 }
 
-void UMCOAttackComponent::HitDetectionTick()
+void UMCOAttackComponent::TickHitDetection()
 {
 	++FrameCount;
 
@@ -174,7 +164,6 @@ void UMCOAttackComponent::EndHitDetection()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
 	FrameCount = 0;
-	CurrentState.bHitDetectionWindowOpened = false;
 }
 
 void UMCOAttackComponent::OpenComboWindow()
@@ -199,7 +188,6 @@ void UMCOAttackComponent::EndAttack()
 		CurrentState.bComboWindowOpened = false;
 		// Reset Attack Index -> 0
 		CurrentState.IndexOffset = CurrentState.AttackCount + 1;
-		CurrentState.bHitDetectionWindowOpened = false;
 
 		HandleCurrentStateChanged(OldState);
 	}
