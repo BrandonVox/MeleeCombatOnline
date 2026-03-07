@@ -6,6 +6,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogTraceHit, Log, All);
+
 UMCOAttackComponent::UMCOAttackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -114,6 +116,43 @@ UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount, 
 void UMCOAttackComponent::BeginHitDetection()
 {
 	FrameCount = 0;
+	EndLocationHistory.Empty();
+
+	if (const ACharacter* MyCharacter = GetOwnerCharacter())
+	{
+		PrevEndLocation = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
+	}
+}
+
+void UMCOAttackComponent::EndHitDetection()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
+
+#if ENABLE_VISUAL_LOG
+	if (FVisualLogger::Get().IsRecording())
+	{
+		for (int32 i = 0; i < EndLocationHistory.Num() - 1; ++i)
+		{
+			UE_VLOG_SEGMENT
+			(
+				GetOwner(),
+				"LogTraceHit",
+				Verbose,
+				EndLocationHistory[i],
+				EndLocationHistory[i+1],
+				FColor::Blue,
+				TEXT("")
+			);
+		}
+	}
+#endif
+
+	if (const ACharacter* MyCharacter = GetOwnerCharacter())
+	{
+		PrevEndLocation = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
+	}
+	FrameCount = 0;
+	EndLocationHistory.Empty();
 }
 
 void UMCOAttackComponent::TickHitDetection()
@@ -140,6 +179,11 @@ void UMCOAttackComponent::TickHitDetection()
 
 	EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
+	if (!HasAuthority(GetOwner()))
+	{
+		DrawDebugType = EDrawDebugTrace::None;
+	}
+
 	TArray<FHitResult> HitResults;
 
 	UKismetSystemLibrary::SphereTraceMultiForObjects
@@ -158,12 +202,26 @@ void UMCOAttackComponent::TickHitDetection()
 		FLinearColor::Green,
 		TraceDrawTime
 	);
-}
 
-void UMCOAttackComponent::EndHitDetection()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
-	FrameCount = 0;
+#if ENABLE_VISUAL_LOG
+	if (FVisualLogger::Get().IsRecording())
+	{
+		UE_VLOG_LOCATION
+		(
+			GetOwner(),
+			"LogTraceHit",
+			Display,
+			TraceLocation_End,
+			5,
+			FColor::Red,
+			TEXT("Trace Hit: %s"),
+			*TraceLocation_End.ToString()
+		);
+	}
+#endif
+
+	EndLocationHistory.Add(TraceLocation_End);
+	PrevEndLocation = TraceLocation_End;
 }
 
 void UMCOAttackComponent::OpenComboWindow()

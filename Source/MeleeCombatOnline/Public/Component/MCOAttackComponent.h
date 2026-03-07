@@ -93,4 +93,10 @@ private: // Property
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	float TraceDrawTime = 5.f;
+	
+	UPROPERTY()
+	TArray<FVector> EndLocationHistory;
+	
+	UPROPERTY()
+	FVector PrevEndLocation;
 };
