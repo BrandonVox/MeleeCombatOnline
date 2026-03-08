@@ -64,7 +64,7 @@ private: // Function
 	void OnRep_CurrentState(const FAttackState& OldState);
 
 	ACharacter* GetOwnerCharacter();
-	
+
 	void DoTrace();
 
 private: // Property
@@ -100,9 +100,12 @@ private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	bool bDrawDebugClient = true;
 
-	UPROPERTY()
-	TArray<FVector> EndLocationHistory;
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	float BaseDamage = 20.f;
 
+	FVector OldTraceStart;
+	FVector OldTraceEnd;
+	
 	UPROPERTY()
-	FVector PrevEndLocation;
+	TSet<AActor*> HitActorsThisSwing;
 };

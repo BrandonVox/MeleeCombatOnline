@@ -4,7 +4,9 @@
 #include "Component/MCOAttackComponent.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
+
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTraceHit, Log, All);
 
@@ -115,54 +117,7 @@ UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount, 
 
 void UMCOAttackComponent::BeginHitDetection()
 {
-	FrameCount = 0;
-	EndLocationHistory.Empty();
-
-	if (const ACharacter* MyCharacter = GetOwnerCharacter())
-	{
-		PrevEndLocation = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
-	}
-}
-
-void UMCOAttackComponent::EndHitDetection()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
-
-#if ENABLE_VISUAL_LOG
-	if (FVisualLogger::Get().IsRecording())
-	{
-		for (int32 i = 0; i < EndLocationHistory.Num() - 1; ++i)
-		{
-			UE_VLOG_SEGMENT
-			(
-				GetOwner(),
-				"LogTraceHit",
-				Verbose,
-				EndLocationHistory[i],
-				EndLocationHistory[i+1],
-				FColor::Blue,
-				TEXT("")
-			);
-		}
-	}
-#endif
-
-	if (const ACharacter* MyCharacter = GetOwnerCharacter())
-	{
-		PrevEndLocation = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
-	}
-	FrameCount = 0;
-	EndLocationHistory.Empty();
-}
-
-void UMCOAttackComponent::TickHitDetection()
-{
-	DoTrace();
-}
-
-void UMCOAttackComponent::DoTrace()
-{
-	++FrameCount;
+	UE_LOG(LogTemp, Warning, TEXT("Begin Hit Detection"));
 
 	ACharacter* MyCharacter = GetOwnerCharacter();
 
@@ -176,8 +131,31 @@ void UMCOAttackComponent::DoTrace()
 		return;
 	}
 
-	const FVector TraceLocation_Start = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_Start);
-	const FVector TraceLocation_End = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
+	OldTraceStart = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_Start);
+	OldTraceEnd = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
+}
+
+void UMCOAttackComponent::EndHitDetection()
+{
+	// UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
+}
+
+void UMCOAttackComponent::TickHitDetection()
+{
+	ACharacter* MyCharacter = GetOwnerCharacter();
+
+	if (MyCharacter == nullptr)
+	{
+		return;
+	}
+
+	if (MyCharacter->GetMesh() == nullptr)
+	{
+		return;
+	}
+
+	const FVector TraceStart = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_Start);
+	const FVector TraceEnd = MyCharacter->GetMesh()->GetSocketLocation(TraceSocketName_End);
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetOwner());
@@ -204,8 +182,8 @@ void UMCOAttackComponent::DoTrace()
 	UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
 		this,
-		TraceLocation_Start,
-		TraceLocation_End,
+		TraceStart,
+		TraceEnd,
 		TraceRadius,
 		TraceObjectTypes,
 		false,
@@ -218,8 +196,30 @@ void UMCOAttackComponent::DoTrace()
 		TraceDrawTime
 	);
 
-	EndLocationHistory.Add(TraceLocation_End);
-	PrevEndLocation = TraceLocation_End;
+	// we need Hit Results here
+	for (const FHitResult& HitResult : HitResults)
+	{
+		AActor* VictimActor = HitResult.GetActor();
+		if (VictimActor == nullptr)
+		{
+			continue;
+		}
+
+		if (HitActorsThisSwing.Contains(VictimActor))
+		{
+			continue;
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *VictimActor->GetName());
+		HitActorsThisSwing.Add(VictimActor);
+	}
+
+	OldTraceStart = TraceStart;
+	OldTraceEnd = TraceEnd;
+}
+
+void UMCOAttackComponent::DoTrace()
+{
 }
 
 void UMCOAttackComponent::OpenComboWindow()
