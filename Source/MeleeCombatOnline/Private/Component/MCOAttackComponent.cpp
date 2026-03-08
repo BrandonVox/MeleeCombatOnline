@@ -119,6 +119,8 @@ void UMCOAttackComponent::BeginHitDetection()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Begin Hit Detection"));
 
+	HitActorsThisSwing.Empty();
+
 	ACharacter* MyCharacter = GetOwnerCharacter();
 
 	if (MyCharacter == nullptr)
@@ -138,6 +140,7 @@ void UMCOAttackComponent::BeginHitDetection()
 void UMCOAttackComponent::EndHitDetection()
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
+	HitActorsThisSwing.Empty();
 }
 
 void UMCOAttackComponent::TickHitDetection()
@@ -210,7 +213,17 @@ void UMCOAttackComponent::TickHitDetection()
 			continue;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *VictimActor->GetName());
+		// Apply Damage Here
+
+		if (HasAuthority(MyCharacter))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Server %s"), *VictimActor->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Client %s"), *VictimActor->GetName());
+		}
+
 		HitActorsThisSwing.Add(VictimActor);
 	}
 
