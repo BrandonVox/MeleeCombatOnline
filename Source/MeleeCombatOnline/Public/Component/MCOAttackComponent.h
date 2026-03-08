@@ -42,6 +42,7 @@ public: // Function
 
 	void BeginHitDetection();
 	void EndHitDetection();
+
 	void TickHitDetection();
 
 	void OpenComboWindow();
@@ -63,6 +64,8 @@ private: // Function
 	void OnRep_CurrentState(const FAttackState& OldState);
 
 	ACharacter* GetOwnerCharacter();
+	
+	void DoTrace();
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
@@ -93,10 +96,13 @@ private: // Property
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	float TraceDrawTime = 5.f;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
+	bool bDrawDebugClient = true;
+
 	UPROPERTY()
 	TArray<FVector> EndLocationHistory;
-	
+
 	UPROPERTY()
 	FVector PrevEndLocation;
 };

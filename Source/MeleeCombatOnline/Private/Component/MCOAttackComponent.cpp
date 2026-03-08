@@ -157,6 +157,11 @@ void UMCOAttackComponent::EndHitDetection()
 
 void UMCOAttackComponent::TickHitDetection()
 {
+	DoTrace();
+}
+
+void UMCOAttackComponent::DoTrace()
+{
 	++FrameCount;
 
 	ACharacter* MyCharacter = GetOwnerCharacter();
@@ -179,20 +184,23 @@ void UMCOAttackComponent::TickHitDetection()
 
 	EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
-	if (!HasAuthority(GetOwner()))
+	if (!bDrawDebugClient)
 	{
-		// DrawDebugType = EDrawDebugTrace::None;
+		if (!HasAuthority(GetOwner()))
+		{
+			DrawDebugType = EDrawDebugTrace::None;
+		}
 	}
 
 	FLinearColor TraceColor = FLinearColor::Red;
-	
+
 	if (HasAuthority(MyCharacter))
 	{
 		TraceColor = FLinearColor::Blue;
 	}
 
 	TArray<FHitResult> HitResults;
-	
+
 	UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
 		this,
@@ -209,23 +217,6 @@ void UMCOAttackComponent::TickHitDetection()
 		FLinearColor::Green,
 		TraceDrawTime
 	);
-
-#if ENABLE_VISUAL_LOG
-	if (FVisualLogger::Get().IsRecording())
-	{
-		UE_VLOG_LOCATION
-		(
-			GetOwner(),
-			"LogTraceHit",
-			Display,
-			TraceLocation_End,
-			5,
-			FColor::Red,
-			TEXT("Trace Hit: %s"),
-			*TraceLocation_End.ToString()
-		);
-	}
-#endif
 
 	EndLocationHistory.Add(TraceLocation_End);
 	PrevEndLocation = TraceLocation_End;
