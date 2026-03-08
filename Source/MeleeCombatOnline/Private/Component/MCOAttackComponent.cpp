@@ -181,11 +181,18 @@ void UMCOAttackComponent::TickHitDetection()
 
 	if (!HasAuthority(GetOwner()))
 	{
-		DrawDebugType = EDrawDebugTrace::None;
+		// DrawDebugType = EDrawDebugTrace::None;
+	}
+
+	FLinearColor TraceColor = FLinearColor::Red;
+	
+	if (HasAuthority(MyCharacter))
+	{
+		TraceColor = FLinearColor::Blue;
 	}
 
 	TArray<FHitResult> HitResults;
-
+	
 	UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
 		this,
@@ -198,7 +205,7 @@ void UMCOAttackComponent::TickHitDetection()
 		DrawDebugType,
 		HitResults,
 		false,
-		FLinearColor::Red,
+		TraceColor,
 		FLinearColor::Green,
 		TraceDrawTime
 	);

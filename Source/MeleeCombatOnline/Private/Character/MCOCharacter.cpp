@@ -23,6 +23,9 @@ AMCOCharacter::AMCOCharacter()
 	
 	// Disable Mesh collision
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	// Anim Tick Option
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
 
 void AMCOCharacter::BeginPlay()
