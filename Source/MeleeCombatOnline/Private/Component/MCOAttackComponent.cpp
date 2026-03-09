@@ -37,7 +37,10 @@ void UMCOAttackComponent::BeginPlay()
 	FVector CurrentEnd = OldEnd + MyOwnerCharacter->GetActorRightVector() * 84.f;
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(MyOwnerCharacter);
-	FillTraceGap(CurrentStart, CurrentEnd, OldStart, OldEnd, ActorsToIgnore, FLinearColor::Yellow);
+
+
+	float CapsuleLength = FVector::Distance(CurrentStart, CurrentEnd);
+	FillTraceGap(CurrentStart, CurrentEnd, OldStart, OldEnd, ActorsToIgnore, FLinearColor::Yellow, CapsuleLength);
 }
 
 void UMCOAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -166,7 +169,9 @@ void UMCOAttackComponent::TickHitDetection()
 
 	TraceAndProcessHitResults(TraceStart, TraceEnd, ActorsToIgnore, TraceColor);
 
-	FillTraceGap(TraceStart, TraceEnd, OldTraceStart, OldTraceEnd, ActorsToIgnore, FLinearColor::Yellow);
+
+	float CapsuleLength = FVector::Distance(TraceStart, TraceEnd);
+	FillTraceGap(TraceStart, TraceEnd, OldTraceStart, OldTraceEnd, ActorsToIgnore, FLinearColor::Yellow, CapsuleLength);
 
 	OldTraceStart = TraceStart;
 	OldTraceEnd = TraceEnd;
@@ -240,7 +245,8 @@ void UMCOAttackComponent::FillTraceGap(FVector CurrentStart,
                                        FVector OldStart,
                                        FVector OldEnd,
                                        const TArray<AActor*>& ActorsToIgnore,
-                                       FLinearColor TraceColor)
+                                       FLinearColor TraceColor,
+                                       float CapsuleLength)
 {
 	float TwoEndDistance = FVector::Distance(OldEnd, CurrentEnd);
 	FVector TwoEndDirection = (CurrentEnd - OldEnd).GetSafeNormal();
@@ -255,18 +261,17 @@ void UMCOAttackComponent::FillTraceGap(FVector CurrentStart,
 
 	UE_LOG(LogTemp, Warning, TEXT("Fillers: %d"), FillNumber);
 
-	float CapsuleLength = FVector::Distance(OldStart, OldEnd);
-
 	// fill number = 4
 	// 1 2 3 4
 	for (int32 i = 1; i <= FillNumber; ++i)
 	{
 		FVector FillerEnd = OldEnd + (TwoEndDirection * TraceRadius * i);
-
 		FVector FillerStart = OldStart + (TwoStartDirection * StartStep * i);
 
-		FVector FillDirection = (FillerEnd - FillerStart).GetSafeNormal();
-		// FillerEnd = FillerStart + (FillDirection * CapsuleLength);
+		// Direction from Start -> End
+		FVector CapsuleDirection = (FillerEnd - FillerStart).GetSafeNormal();
+		
+		FillerEnd = FillerStart + (CapsuleDirection * CapsuleLength);
 
 		TraceAndProcessHitResults(FillerStart, FillerEnd, ActorsToIgnore, TraceColor);
 	}

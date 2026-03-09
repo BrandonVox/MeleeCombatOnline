@@ -76,8 +76,8 @@ private: // Function
 	                  FVector OldStart,
 	                  FVector OldEnd,
 	                  const TArray<AActor*>& ActorsToIgnore,
-	                  FLinearColor TraceColor
-	);
+	                  FLinearColor TraceColor,
+	                  float CapsuleLength);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
