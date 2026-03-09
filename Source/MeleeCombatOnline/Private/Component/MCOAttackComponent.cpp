@@ -7,6 +7,7 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTraceHit, Log, All);
 
@@ -27,6 +28,16 @@ void UMCOAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 void UMCOAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
+	FVector OldStart = MyOwnerCharacter->GetActorLocation();
+	FVector OldEnd = MyOwnerCharacter->GetActorLocation() + (MyOwnerCharacter->GetActorForwardVector() * 500.f);
+
+	FVector CurrentStart = OldStart + MyOwnerCharacter->GetActorRightVector() * 84.f;
+	FVector CurrentEnd = OldEnd + MyOwnerCharacter->GetActorRightVector() * 84.f;
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(MyOwnerCharacter);
+	FillTraceGap(CurrentStart, CurrentEnd, OldStart, OldEnd, ActorsToIgnore, FLinearColor::Yellow);
 }
 
 void UMCOAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -91,9 +102,9 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 {
 	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
 	{
-		if (ACharacter* MyCharacter = GetOwnerCharacter())
+		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
-			MyCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
+			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
 		}
 	}
 }
@@ -131,7 +142,7 @@ void UMCOAttackComponent::EndHitDetection()
 	// UE_LOG(LogTemp, Warning, TEXT("Frame Count = %d"), FrameCount);
 	HitActorsThisSwing.Empty();
 
-	const ACharacter* MyOwnerCharacter = GetOwnerCharacter();
+	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
 	OldTraceStart = GetSocketLocation(MyOwnerCharacter, TraceSocketName_Start);
 	OldTraceEnd = GetSocketLocation(MyOwnerCharacter, TraceSocketName_End);
 }
@@ -140,8 +151,8 @@ void UMCOAttackComponent::TickHitDetection()
 {
 	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
 
-	const FVector TraceStart = GetSocketLocation(MyOwnerCharacter, TraceSocketName_Start);
-	const FVector TraceEnd = GetSocketLocation(MyOwnerCharacter, TraceSocketName_End);
+	FVector TraceStart = GetSocketLocation(MyOwnerCharacter, TraceSocketName_Start);
+	FVector TraceEnd = GetSocketLocation(MyOwnerCharacter, TraceSocketName_End);
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(MyOwnerCharacter);
@@ -153,25 +164,20 @@ void UMCOAttackComponent::TickHitDetection()
 		TraceColor = FLinearColor::Blue;
 	}
 
-	TraceAndProcessHitResults(
-		TraceStart,
-		TraceEnd,
-		ActorsToIgnore,
-		TraceColor
-	);
+	TraceAndProcessHitResults(TraceStart, TraceEnd, ActorsToIgnore, TraceColor);
 
-	FillTraceGap(TraceStart, TraceEnd, OldTraceStart, OldTraceEnd, ActorsToIgnore,
-	             FLinearColor::Yellow);
+	FillTraceGap(TraceStart, TraceEnd, OldTraceStart, OldTraceEnd, ActorsToIgnore, FLinearColor::Yellow);
 
 	OldTraceStart = TraceStart;
 	OldTraceEnd = TraceEnd;
 }
 
-void UMCOAttackComponent::TraceAndProcessHitResults(FVector TraceStart, FVector TraceEnd,
-                                                    const TArray<AActor*>& ActorsToIgnore, FLinearColor TraceColor)
+void UMCOAttackComponent::TraceAndProcessHitResults(FVector TraceStart,
+                                                    FVector TraceEnd,
+                                                    const TArray<AActor*>& ActorsToIgnore,
+                                                    FLinearColor TraceColor)
 {
 	// Trace
-
 	EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
 	if (!bDrawDebugClient)
@@ -202,10 +208,10 @@ void UMCOAttackComponent::TraceAndProcessHitResults(FVector TraceStart, FVector 
 	);
 
 	// Process Hit Results
-
 	for (const FHitResult& HitResult : HitResults)
 	{
 		AActor* VictimActor = HitResult.GetActor();
+
 		if (VictimActor == nullptr)
 		{
 			continue;
@@ -216,28 +222,14 @@ void UMCOAttackComponent::TraceAndProcessHitResults(FVector TraceStart, FVector 
 			continue;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *VictimActor->GetName());
-
-		HitActorsThisSwing.Add(VictimActor);
-	}
-}
-
-void UMCOAttackComponent::ProcessHitResults(const TArray<FHitResult>& HitResults)
-{
-	for (const FHitResult& HitResult : HitResults)
-	{
-		AActor* VictimActor = HitResult.GetActor();
-		if (VictimActor == nullptr)
+		if (HasAuthority(GetOwner()))
 		{
-			continue;
+			UE_LOG(LogTemp, Warning, TEXT("Server: %s"), *VictimActor->GetName());
 		}
-
-		if (HitActorsThisSwing.Contains(VictimActor))
+		else
 		{
-			continue;
+			UE_LOG(LogTemp, Warning, TEXT("Client: %s"), *VictimActor->GetName());
 		}
-
-		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *VictimActor->GetName());
 
 		HitActorsThisSwing.Add(VictimActor);
 	}
@@ -250,31 +242,33 @@ void UMCOAttackComponent::FillTraceGap(FVector CurrentStart,
                                        const TArray<AActor*>& ActorsToIgnore,
                                        FLinearColor TraceColor)
 {
-	
-	
 	float TwoEndDistance = FVector::Distance(OldEnd, CurrentEnd);
+	FVector TwoEndDirection = (CurrentEnd - OldEnd).GetSafeNormal();
+
+	// Fill 1 trace each 20 unit
 	int32 FillNumber = FMath::TruncToInt32(TwoEndDistance / TraceRadius);
-	
+
 	float TwoStartDistance = FVector::Distance(OldStart, CurrentStart);
+	FVector TwoStartDirection = (CurrentStart - OldStart).GetSafeNormal();
 
 	float StartStep = (TwoStartDistance / FillNumber);
 
-	FVector TwoEndDirection = (CurrentEnd - OldEnd).GetSafeNormal();
-	FVector TwoStartDirection = (CurrentStart - OldStart).GetSafeNormal();
-
-	// UE_LOG(LogTemp, Warning, TEXT("Fillers: %d"), FillNumber);
+	UE_LOG(LogTemp, Warning, TEXT("Fillers: %d"), FillNumber);
 
 	float CapsuleLength = FVector::Distance(OldStart, OldEnd);
 
+	// fill number = 4
+	// 1 2 3 4
 	for (int32 i = 1; i <= FillNumber; ++i)
 	{
-		FVector FilledEnd = OldEnd + (TwoEndDirection * TraceRadius * i);
-		FVector FilledStart = OldStart + (TwoStartDirection * StartStep * i);
+		FVector FillerEnd = OldEnd + (TwoEndDirection * TraceRadius * i);
 
-		FVector FillDirection = (FilledEnd - FilledStart).GetSafeNormal();
-		FilledEnd = FilledStart + (FillDirection * CapsuleLength);
-		
-		TraceAndProcessHitResults(FilledStart, FilledEnd, ActorsToIgnore, TraceColor);
+		FVector FillerStart = OldStart + (TwoStartDirection * StartStep * i);
+
+		FVector FillDirection = (FillerEnd - FillerStart).GetSafeNormal();
+		// FillerEnd = FillerStart + (FillDirection * CapsuleLength);
+
+		TraceAndProcessHitResults(FillerStart, FillerEnd, ActorsToIgnore, TraceColor);
 	}
 }
 
@@ -325,7 +319,7 @@ ACharacter* UMCOAttackComponent::GetOwnerCharacter()
 	return OwnerCharacter;
 }
 
-FVector UMCOAttackComponent::GetSocketLocation(const ACharacter* InCharacter, FName InSocketName)
+FVector UMCOAttackComponent::GetSocketLocation(ACharacter* InCharacter, FName InSocketName)
 {
 	if (InCharacter && InCharacter->GetMesh())
 	{

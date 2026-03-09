@@ -42,7 +42,6 @@ public: // Function
 
 	void BeginHitDetection();
 	void EndHitDetection();
-
 	void TickHitDetection();
 
 	void OpenComboWindow();
@@ -70,12 +69,15 @@ private: // Function
 	                               const TArray<AActor*>& ActorsToIgnore,
 	                               FLinearColor TraceColor);
 
-	static FVector GetSocketLocation(const ACharacter* InCharacter, FName InSocketName);
+	static FVector GetSocketLocation(ACharacter* InCharacter, FName InSocketName);
 
-	void FillTraceGap(FVector CurrentStart, FVector CurrentEnd, FVector OldStart, FVector OldEnd,
-	                  const TArray<AActor*>& ActorsToIgnore, FLinearColor TraceColor);
-
-	void ProcessHitResults(const TArray<FHitResult>& HitResults);
+	void FillTraceGap(FVector CurrentStart,
+	                  FVector CurrentEnd,
+	                  FVector OldStart,
+	                  FVector OldEnd,
+	                  const TArray<AActor*>& ActorsToIgnore,
+	                  FLinearColor TraceColor
+	);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
@@ -113,8 +115,8 @@ private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	float BaseDamage = 20.f;
 
-	FVector OldTraceStart;
-	FVector OldTraceEnd;
+	FVector OldTraceStart; // Last Frame
+	FVector OldTraceEnd; // Last Frame
 
 	UPROPERTY()
 	TSet<AActor*> HitActorsThisSwing;
