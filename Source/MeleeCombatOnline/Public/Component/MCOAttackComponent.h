@@ -65,7 +65,17 @@ private: // Function
 
 	ACharacter* GetOwnerCharacter();
 
-	void DoTrace();
+	void TraceAndProcessHitResults(FVector TraceStart,
+	                               FVector TraceEnd,
+	                               const TArray<AActor*>& ActorsToIgnore,
+	                               FLinearColor TraceColor);
+
+	static FVector GetSocketLocation(const ACharacter* InCharacter, FName InSocketName);
+
+	void FillTraceGap(FVector CurrentStart, FVector CurrentEnd, FVector OldStart, FVector OldEnd,
+	                  const TArray<AActor*>& ActorsToIgnore, FLinearColor TraceColor);
+
+	void ProcessHitResults(const TArray<FHitResult>& HitResults);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
@@ -85,7 +95,7 @@ private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	FName TraceSocketName_End;
 
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta=(ClampMin = 10.f, ClampMax = 50.f))
 	float TraceRadius = 20.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
@@ -105,7 +115,7 @@ private: // Property
 
 	FVector OldTraceStart;
 	FVector OldTraceEnd;
-	
+
 	UPROPERTY()
 	TSet<AActor*> HitActorsThisSwing;
 };
