@@ -77,12 +77,16 @@ void UMCOAttackComponent::TryAttack()
 	}
 }
 
+// Server
 void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAttackState& OldClientState)
 {
 	if (!CanAttack())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
-		Client_ServerDeniedAttack(OldClientState);
+		FAttackState GoodState = OldClientState;
+		GoodState.AttackCount = CurrentState.AttackCount;
+		GoodState.IndexOffset = CurrentState.IndexOffset;
+		Client_ServerDeniedAttack(GoodState);
 		return;
 	}
 
@@ -91,8 +95,23 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	CurrentState.bIsAttacking = true;
 	CurrentState.bComboWindowOpened = false;
 	++CurrentState.AttackCount;
+	
+	Client_ConfirmAttack(CurrentState);
 
 	HandleCurrentStateChanged(OldState);
+}
+
+// Client
+void UMCOAttackComponent::Client_ConfirmAttack_Implementation(const FAttackState& ServerAttackState)
+{
+	if (CurrentState == ServerAttackState)
+	{
+		return;
+	}
+	
+	
+	
+	
 }
 
 void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& OldClientState)
@@ -127,7 +146,7 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
 			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
-
+			
 			if (!HasAuthority(GetOwner()))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Play Montage, Attack Count: %d"), CurrentState.AttackCount);

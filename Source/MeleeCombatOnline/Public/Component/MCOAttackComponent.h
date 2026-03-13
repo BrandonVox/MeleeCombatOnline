@@ -83,16 +83,16 @@ private: // Function
 	                  const TArray<AActor*>& ActorsToIgnore,
 	                  FLinearColor TraceColor,
 	                  float CapsuleLength);
-	
-	
-
 
 	UFUNCTION(Server, Reliable)
 	void Server_ClientIsAboutToAttack(const FAttackState& OldClientState);
-	
+
 	UFUNCTION(Client, Reliable)
 	void Client_ServerDeniedAttack(const FAttackState& OldClientState);
-	
+
+	UFUNCTION(Client, Reliable)
+	void Client_ConfirmAttack(const FAttackState& ServerAttackState);
+
 	static bool HasAuthority(const AActor* InActor);
 	static bool LocalRoleIsAutonomousProxy(const AActor* InActor);
 	static bool HasAuthorityOrClientCanPredict(const AActor* InActor);
