@@ -71,18 +71,18 @@ void UMCOAttackComponent::TryAttack()
 
 		if (LocalRoleIsAutonomousProxy(GetOwner()))
 		{
-			Server_ClientIsAboutToAttack(CurrentState);
+			Server_ClientIsAboutToAttack(OldState);
 		}
 		HandleCurrentStateChanged(OldState);
 	}
 }
 
-void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAttackState& ClientState)
+void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAttackState& OldClientState)
 {
 	if (!CanAttack())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
-		Client_ServerDeniedAttack(CurrentState);
+		Client_ServerDeniedAttack(OldClientState);
 		return;
 	}
 
@@ -95,14 +95,14 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	HandleCurrentStateChanged(OldState);
 }
 
-void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& ServerCorrectState)
+void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& OldClientState)
 {
 	if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 	{
 		MyOwnerCharacter->StopAnimMontage();
 	}
 	
-	CurrentState = ServerCorrectState;
+	CurrentState = OldClientState;
 }
 
 bool UMCOAttackComponent::CanAttack() const

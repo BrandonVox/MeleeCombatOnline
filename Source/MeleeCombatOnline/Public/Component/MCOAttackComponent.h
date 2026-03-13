@@ -88,10 +88,10 @@ private: // Function
 
 
 	UFUNCTION(Server, Reliable)
-	void Server_ClientIsAboutToAttack(const FAttackState& ClientState);
+	void Server_ClientIsAboutToAttack(const FAttackState& OldClientState);
 	
 	UFUNCTION(Client, Reliable)
-	void Client_ServerDeniedAttack(const FAttackState& ServerCorrectState);
+	void Client_ServerDeniedAttack(const FAttackState& OldClientState);
 	
 	static bool HasAuthority(const AActor* InActor);
 	static bool LocalRoleIsAutonomousProxy(const AActor* InActor);
