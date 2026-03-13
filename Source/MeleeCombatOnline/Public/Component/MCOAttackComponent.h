@@ -105,7 +105,10 @@ private: // Property
 
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentState)
 	FAttackState CurrentState;
-
+	
+	UPROPERTY()
+	FAttackState OldState_CanAttack;
+	
 	int32 FrameCount = 0;
 
 	UPROPERTY()

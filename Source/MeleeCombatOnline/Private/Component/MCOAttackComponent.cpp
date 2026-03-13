@@ -3,13 +3,10 @@
 
 #include "Component/MCOAttackComponent.h"
 
-#include "EditorActorFolders.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 #include "Kismet/KismetSystemLibrary.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTraceHit, Log, All);
 
@@ -68,6 +65,8 @@ void UMCOAttackComponent::TryAttack()
 	{
 		return;
 	}
+	
+	OldState_CanAttack = CurrentState;
 
 	FAttackState OldState = CurrentState;
 
@@ -110,13 +109,12 @@ void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation()
 {
 	if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 	{
-		// Stop current anim montage
-		// stop with blend out time to smooth transition, not snappy
 		MyOwnerCharacter->StopAnimMontage();
 	}
-
-	CurrentState.bIsAttacking = false;
-	CurrentState.bComboWindowOpened = false;
+	
+	// have to be state before attack??
+	// im worry that server
+	CurrentState = OldState_CanAttack;
 }
 
 bool UMCOAttackComponent::CanAttack() const
