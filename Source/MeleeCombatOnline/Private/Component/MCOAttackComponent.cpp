@@ -2,6 +2,8 @@
 
 
 #include "Component/MCOAttackComponent.h"
+
+#include "EditorActorFolders.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
@@ -95,7 +97,7 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	CurrentState.bIsAttacking = true;
 	CurrentState.bComboWindowOpened = false;
 	++CurrentState.AttackCount;
-	
+
 	Client_ConfirmAttack(CurrentState);
 
 	HandleCurrentStateChanged(OldState);
@@ -104,14 +106,21 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 // Client
 void UMCOAttackComponent::Client_ConfirmAttack_Implementation(const FAttackState& ServerAttackState)
 {
-	if (CurrentState == ServerAttackState)
+	// idealy, client & server should identical here
+	// if we check server attack state, can attack -->>> false
+	// but if we can attack in client, means client go to next phase of animation!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	if (CanAttack()) // client already go to next phase
 	{
 		return;
 	}
-	
-	
-	
-	
+
+	if (CurrentState != ServerAttackState)
+	{
+		FAttackState OldState = CurrentState;
+		CurrentState = ServerAttackState;
+		HandleCurrentStateChanged(OldState);
+	}
 }
 
 void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& OldClientState)
@@ -120,7 +129,7 @@ void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttack
 	{
 		MyOwnerCharacter->StopAnimMontage();
 	}
-	
+
 	CurrentState = OldClientState;
 }
 
@@ -146,7 +155,7 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
 			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
-			
+
 			if (!HasAuthority(GetOwner()))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Play Montage, Attack Count: %d"), CurrentState.AttackCount);
@@ -375,8 +384,6 @@ FVector UMCOAttackComponent::GetSocketLocation(ACharacter* InCharacter, FName In
 
 	return FVector::ZeroVector;
 }
-
-
 
 
 bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
