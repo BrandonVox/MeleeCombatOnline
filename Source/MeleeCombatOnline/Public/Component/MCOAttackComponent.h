@@ -91,7 +91,7 @@ private: // Function
 	void Server_ClientIsAboutToAttack(FAttackState ClientPredictedState);
 
 	UFUNCTION(Client, Reliable)
-	void Client_ServerDeniedAttack(FAttackState ServerRecorrectState);
+	void Client_ServerDeniedAttack();
 
 	static bool HasAuthority(const AActor* InActor);
 	static bool LocalRoleIsAutonomousProxy(const AActor* InActor);

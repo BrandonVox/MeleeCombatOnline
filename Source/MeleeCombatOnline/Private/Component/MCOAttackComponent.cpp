@@ -88,18 +88,11 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(FAttackSta
 {
 	if (!CanAttack())
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
-		FAttackState GoodState;
-		GoodState.bIsAttacking = false;
-		GoodState.bComboWindowOpened = false;
-		GoodState.AttackCount = CurrentState.AttackCount;
-		GoodState.IndexOffset = CurrentState.IndexOffset;
-		Client_ServerDeniedAttack(GoodState);
+		Client_ServerDeniedAttack();
 		return;
 	}
 
 	FAttackState OldState = CurrentState;
-
 	CurrentState.bIsAttacking = true;
 	CurrentState.bComboWindowOpened = false;
 	++CurrentState.AttackCount;
@@ -113,7 +106,7 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(FAttackSta
 	HandleCurrentStateChanged(OldState);
 }
 
-void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(FAttackState ServerRecorrectState)
+void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation()
 {
 	if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 	{
@@ -124,9 +117,6 @@ void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(FAttackState 
 
 	CurrentState.bIsAttacking = false;
 	CurrentState.bComboWindowOpened = false;
-	CurrentState.AttackCount = ServerRecorrectState.AttackCount;
-	CurrentState.IndexOffset = ServerRecorrectState.IndexOffset;
-	LocalHighestAttackCount = ServerRecorrectState.AttackCount;
 }
 
 bool UMCOAttackComponent::CanAttack() const
