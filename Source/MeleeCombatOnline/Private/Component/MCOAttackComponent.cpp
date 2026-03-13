@@ -24,7 +24,7 @@ void UMCOAttackComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION_NOTIFY(UMCOAttackComponent, CurrentState, COND_SkipOwner, REPNOTIFY_OnChanged);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMCOAttackComponent, CurrentState, COND_SkipOwner, REPNOTIFY_Always);
 }
 
 void UMCOAttackComponent::BeginPlay()
@@ -58,25 +58,29 @@ void UMCOAttackComponent::LocalInputPressed()
 
 void UMCOAttackComponent::TryAttack()
 {
+	// THIS FUNCTION ONLY CALL LOCALLY
+	if (!IsLocallyControlled(GetOwnerPawn()))
+	{
+		return;
+	}
+	
 	if (!CanAttack())
 	{
 		return;
 	}
+	
+	FAttackState OldState = CurrentState;
 
-	if (HasAuthorityOrClientCanPredict(GetOwner()))
+	CurrentState.bIsAttacking = true;
+	CurrentState.bComboWindowOpened = false;
+	++CurrentState.AttackCount;
+	
+	if (LocalRoleIsAutonomousProxy(GetOwner()))
 	{
-		FAttackState OldState = CurrentState;
-
-		CurrentState.bIsAttacking = true;
-		CurrentState.bComboWindowOpened = false;
-		++CurrentState.AttackCount;
-
-		if (LocalRoleIsAutonomousProxy(GetOwner()))
-		{
-			Server_ClientIsAboutToAttack(OldState);
-		}
-		HandleCurrentStateChanged(OldState);
+		Server_ClientIsAboutToAttack(OldState);
 	}
+
+	HandleCurrentStateChanged(OldState);
 }
 
 // Server
@@ -84,12 +88,12 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 {
 	if (!CanAttack())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
+		// UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
 		FAttackState GoodState;
 		GoodState.bIsAttacking = false;
 		GoodState.bComboWindowOpened = false;
-		GoodState.AttackCount = CurrentState.AttackCount;
-		GoodState.IndexOffset = CurrentState.IndexOffset;
+		GoodState.AttackCount = OldClientState.AttackCount;
+		GoodState.IndexOffset = OldClientState.IndexOffset;
 		Client_ServerDeniedAttack(GoodState);
 		return;
 	}
@@ -100,22 +104,27 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	CurrentState.bComboWindowOpened = false;
 	++CurrentState.AttackCount;
 
+	// Server and client agree!!
+	if (OldClientState == CurrentState)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SERVER AND CLIENT AGREE"));
+	}
+
 	HandleCurrentStateChanged(OldState);
 }
 
-void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& OldClientState)
+void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& ServerRecorrectState)
 {
 	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
-	if (MyOwnerCharacter && MyOwnerCharacter->GetMesh())
+	if (MyOwnerCharacter)
 	{
-		UAnimInstance* OwnerAnimInstance = MyOwnerCharacter->GetMesh()->GetAnimInstance();
-		if (OwnerAnimInstance)
-		{
-			OwnerAnimInstance->Montage_Stop(0.f, OwnerAnimInstance->GetCurrentActiveMontage());
-		}
+		// Stop current anim montage
+		// stop with blend out time to smooth transition, not snappy
+		MyOwnerCharacter->StopAnimMontage();
 	}
 
-	CurrentState = OldClientState;
+	CurrentState.bIsAttacking = false;
+	CurrentState.bComboWindowOpened = false;
 }
 
 bool UMCOAttackComponent::CanAttack() const
@@ -339,6 +348,7 @@ void UMCOAttackComponent::EndAttack()
 		CurrentState.bComboWindowOpened = false;
 		// Reset Attack Index -> 0
 		CurrentState.IndexOffset = CurrentState.AttackCount + 1;
+		LocalHighestAttackCount = CurrentState.AttackCount;
 
 		HandleCurrentStateChanged(OldState);
 	}
@@ -359,6 +369,16 @@ ACharacter* UMCOAttackComponent::GetOwnerCharacter()
 	}
 
 	return OwnerCharacter;
+}
+
+APawn* UMCOAttackComponent::GetOwnerPawn()
+{
+	if (OwnerPawn == nullptr)
+	{
+		OwnerPawn = GetOwner<APawn>();
+	}
+
+	return OwnerPawn;
 }
 
 FVector UMCOAttackComponent::GetSocketLocation(ACharacter* InCharacter, FName InSocketName)
@@ -385,4 +405,14 @@ bool UMCOAttackComponent::LocalRoleIsAutonomousProxy(const AActor* InActor)
 bool UMCOAttackComponent::HasAuthorityOrClientCanPredict(const AActor* InActor)
 {
 	return HasAuthority(InActor) || LocalRoleIsAutonomousProxy(InActor);
+}
+
+bool UMCOAttackComponent::IsLocallyControlled(const APawn* InPawn)
+{
+	return InPawn && InPawn->IsLocallyControlled();
+}
+
+bool UMCOAttackComponent::IsLocallyControlled()
+{
+	return IsLocallyControlled(GetOwnerPawn());
 }

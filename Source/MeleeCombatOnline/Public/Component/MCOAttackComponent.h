@@ -69,6 +69,9 @@ private: // Function
 
 	ACharacter* GetOwnerCharacter();
 
+
+	APawn* GetOwnerPawn();
+
 	void TraceAndProcessHitResults(FVector TraceStart,
 	                               FVector TraceEnd,
 	                               const TArray<AActor*>& ActorsToIgnore,
@@ -88,11 +91,13 @@ private: // Function
 	void Server_ClientIsAboutToAttack(const FAttackState& OldClientState);
 
 	UFUNCTION(Client, Reliable)
-	void Client_ServerDeniedAttack(const FAttackState& OldClientState);
+	void Client_ServerDeniedAttack(const FAttackState& ServerRecorrectState);
 
 	static bool HasAuthority(const AActor* InActor);
 	static bool LocalRoleIsAutonomousProxy(const AActor* InActor);
 	static bool HasAuthorityOrClientCanPredict(const AActor* InActor);
+	static bool IsLocallyControlled(const APawn* InPawn);
+	bool IsLocallyControlled() ;
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
@@ -105,6 +110,9 @@ private: // Property
 
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter;
+
+	UPROPERTY()
+	TObjectPtr<APawn> OwnerPawn;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	FName TraceSocketName_Start;
@@ -135,7 +143,7 @@ private: // Property
 
 	UPROPERTY()
 	TSet<AActor*> HitActorsThisSwing;
-	
+
 	UPROPERTY()
 	uint16 LocalHighestAttackCount = 0;
 };
