@@ -85,7 +85,9 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	if (!CanAttack())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
-		FAttackState GoodState = OldClientState;
+		FAttackState GoodState;
+		GoodState.bIsAttacking = false;
+		GoodState.bComboWindowOpened = false;
 		GoodState.AttackCount = CurrentState.AttackCount;
 		GoodState.IndexOffset = CurrentState.IndexOffset;
 		Client_ServerDeniedAttack(GoodState);
@@ -98,36 +100,19 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	CurrentState.bComboWindowOpened = false;
 	++CurrentState.AttackCount;
 
-	Client_ConfirmAttack(CurrentState);
-
 	HandleCurrentStateChanged(OldState);
-}
-
-// Client
-void UMCOAttackComponent::Client_ConfirmAttack_Implementation(const FAttackState& ServerAttackState)
-{
-	// idealy, client & server should identical here
-	// if we check server attack state, can attack -->>> false
-	// but if we can attack in client, means client go to next phase of animation!!!!!!!!!!!!!!!!!!!!!!!!!
-
-	if (CanAttack()) // client already go to next phase
-	{
-		return;
-	}
-
-	if (CurrentState != ServerAttackState)
-	{
-		FAttackState OldState = CurrentState;
-		CurrentState = ServerAttackState;
-		HandleCurrentStateChanged(OldState);
-	}
 }
 
 void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& OldClientState)
 {
-	if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
+	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
+	if (MyOwnerCharacter && MyOwnerCharacter->GetMesh())
 	{
-		MyOwnerCharacter->StopAnimMontage();
+		UAnimInstance* OwnerAnimInstance = MyOwnerCharacter->GetMesh()->GetAnimInstance();
+		if (OwnerAnimInstance)
+		{
+			OwnerAnimInstance->Montage_Stop(0.f, OwnerAnimInstance->GetCurrentActiveMontage());
+		}
 	}
 
 	CurrentState = OldClientState;
@@ -150,8 +135,9 @@ bool UMCOAttackComponent::CanAttack() const
 
 void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState)
 {
-	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
+	if (CurrentState.bIsAttacking && CurrentState.AttackCount > LocalHighestAttackCount)
 	{
+		LocalHighestAttackCount = CurrentState.AttackCount;
 		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
 			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
