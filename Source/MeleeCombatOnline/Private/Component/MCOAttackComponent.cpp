@@ -63,28 +63,28 @@ void UMCOAttackComponent::TryAttack()
 	{
 		return;
 	}
-	
+
 	if (!CanAttack())
 	{
 		return;
 	}
-	
+
 	FAttackState OldState = CurrentState;
 
 	CurrentState.bIsAttacking = true;
 	CurrentState.bComboWindowOpened = false;
 	++CurrentState.AttackCount;
-	
+
 	if (LocalRoleIsAutonomousProxy(GetOwner()))
 	{
-		Server_ClientIsAboutToAttack(OldState);
+		Server_ClientIsAboutToAttack(CurrentState);
 	}
 
 	HandleCurrentStateChanged(OldState);
 }
 
 // Server
-void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAttackState& OldClientState)
+void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(FAttackState ClientPredictedState)
 {
 	if (!CanAttack())
 	{
@@ -92,8 +92,8 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 		FAttackState GoodState;
 		GoodState.bIsAttacking = false;
 		GoodState.bComboWindowOpened = false;
-		GoodState.AttackCount = OldClientState.AttackCount;
-		GoodState.IndexOffset = OldClientState.IndexOffset;
+		GoodState.AttackCount = CurrentState.AttackCount;
+		GoodState.IndexOffset = CurrentState.IndexOffset;
 		Client_ServerDeniedAttack(GoodState);
 		return;
 	}
@@ -105,7 +105,7 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	++CurrentState.AttackCount;
 
 	// Server and client agree!!
-	if (OldClientState == CurrentState)
+	if (CurrentState == ClientPredictedState)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SERVER AND CLIENT AGREE"));
 	}
@@ -113,10 +113,9 @@ void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAtt
 	HandleCurrentStateChanged(OldState);
 }
 
-void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& ServerRecorrectState)
+void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(FAttackState ServerRecorrectState)
 {
-	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
-	if (MyOwnerCharacter)
+	if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 	{
 		// Stop current anim montage
 		// stop with blend out time to smooth transition, not snappy
@@ -125,6 +124,9 @@ void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttack
 
 	CurrentState.bIsAttacking = false;
 	CurrentState.bComboWindowOpened = false;
+	CurrentState.AttackCount = ServerRecorrectState.AttackCount;
+	CurrentState.IndexOffset = ServerRecorrectState.IndexOffset;
+	LocalHighestAttackCount = ServerRecorrectState.AttackCount;
 }
 
 bool UMCOAttackComponent::CanAttack() const
@@ -146,10 +148,10 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 {
 	if (CurrentState.bIsAttacking && CurrentState.AttackCount > LocalHighestAttackCount)
 	{
-		LocalHighestAttackCount = CurrentState.AttackCount;
 		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
 			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
+			LocalHighestAttackCount = CurrentState.AttackCount;
 
 			if (!HasAuthority(GetOwner()))
 			{
@@ -324,7 +326,6 @@ void UMCOAttackComponent::FillTraceGap(FVector CurrentStart,
 	}
 }
 
-
 void UMCOAttackComponent::OpenComboWindow()
 {
 	if (HasAuthorityOrClientCanPredict(GetOwner()))
@@ -336,7 +337,6 @@ void UMCOAttackComponent::OpenComboWindow()
 		HandleCurrentStateChanged(OldState);
 	}
 }
-
 
 void UMCOAttackComponent::EndAttack()
 {
@@ -353,7 +353,6 @@ void UMCOAttackComponent::EndAttack()
 		HandleCurrentStateChanged(OldState);
 	}
 }
-
 
 void UMCOAttackComponent::OnRep_CurrentState(const FAttackState& OldState)
 {
@@ -390,7 +389,6 @@ FVector UMCOAttackComponent::GetSocketLocation(ACharacter* InCharacter, FName In
 
 	return FVector::ZeroVector;
 }
-
 
 bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
 {

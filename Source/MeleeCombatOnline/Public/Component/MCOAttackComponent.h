@@ -11,7 +11,7 @@ struct FAttackState
 {
 	GENERATED_BODY()
 
-	bool operator==(const FAttackState& Other) const
+	bool operator==(FAttackState Other) const
 	{
 		return bIsAttacking == Other.bIsAttacking
 			&& bComboWindowOpened == Other.bComboWindowOpened
@@ -88,16 +88,16 @@ private: // Function
 	                  float CapsuleLength);
 
 	UFUNCTION(Server, Reliable)
-	void Server_ClientIsAboutToAttack(const FAttackState& OldClientState);
+	void Server_ClientIsAboutToAttack(FAttackState ClientPredictedState);
 
 	UFUNCTION(Client, Reliable)
-	void Client_ServerDeniedAttack(const FAttackState& ServerRecorrectState);
+	void Client_ServerDeniedAttack(FAttackState ServerRecorrectState);
 
 	static bool HasAuthority(const AActor* InActor);
 	static bool LocalRoleIsAutonomousProxy(const AActor* InActor);
 	static bool HasAuthorityOrClientCanPredict(const AActor* InActor);
 	static bool IsLocallyControlled(const APawn* InPawn);
-	bool IsLocallyControlled() ;
+	bool IsLocallyControlled();
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
