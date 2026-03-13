@@ -29,18 +29,18 @@ void UMCOAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ACharacter* MyOwnerCharacter = GetOwnerCharacter();
-	FVector OldStart = MyOwnerCharacter->GetActorLocation();
-	FVector OldEnd = MyOwnerCharacter->GetActorLocation() + (MyOwnerCharacter->GetActorForwardVector() * 500.f);
-
-	FVector CurrentStart = OldStart + MyOwnerCharacter->GetActorRightVector() * 84.f;
-	FVector CurrentEnd = OldEnd + MyOwnerCharacter->GetActorRightVector() * 84.f;
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(MyOwnerCharacter);
-
-
-	float CapsuleLength = FVector::Distance(CurrentStart, CurrentEnd);
-	FillTraceGap(CurrentStart, CurrentEnd, OldStart, OldEnd, ActorsToIgnore, FLinearColor::Yellow, CapsuleLength);
+	// ACharacter* MyOwnerCharacter = GetOwnerCharacter();
+	// FVector OldStart = MyOwnerCharacter->GetActorLocation();
+	// FVector OldEnd = MyOwnerCharacter->GetActorLocation() + (MyOwnerCharacter->GetActorForwardVector() * 500.f);
+	//
+	// FVector CurrentStart = OldStart + MyOwnerCharacter->GetActorRightVector() * 84.f;
+	// FVector CurrentEnd = OldEnd + MyOwnerCharacter->GetActorRightVector() * 84.f;
+	// TArray<AActor*> ActorsToIgnore;
+	// ActorsToIgnore.Add(MyOwnerCharacter);
+	//
+	//
+	// float CapsuleLength = FVector::Distance(CurrentStart, CurrentEnd);
+	// FillTraceGap(CurrentStart, CurrentEnd, OldStart, OldEnd, ActorsToIgnore, FLinearColor::Yellow, CapsuleLength);
 }
 
 void UMCOAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -50,19 +50,6 @@ void UMCOAttackComponent::TickComponent(float DeltaTime, enum ELevelTick TickTyp
 }
 
 void UMCOAttackComponent::LocalInputPressed()
-{
-	// Listen Server
-	if (HasAuthority(GetOwner()))
-	{
-		TryAttack();
-		return;
-	}
-
-	// Client
-	Server_TryAttack();
-}
-
-void UMCOAttackComponent::Server_TryAttack_Implementation()
 {
 	TryAttack();
 }
@@ -74,7 +61,7 @@ void UMCOAttackComponent::TryAttack()
 		return;
 	}
 
-	if (HasAuthority(GetOwner()))
+	if (HasAuthorityOrClientCanPredict(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
 
@@ -82,8 +69,40 @@ void UMCOAttackComponent::TryAttack()
 		CurrentState.bComboWindowOpened = false;
 		++CurrentState.AttackCount;
 
+		if (LocalRoleIsAutonomousProxy(GetOwner()))
+		{
+			Server_ClientIsAboutToAttack(CurrentState);
+		}
 		HandleCurrentStateChanged(OldState);
 	}
+}
+
+void UMCOAttackComponent::Server_ClientIsAboutToAttack_Implementation(const FAttackState& ClientState)
+{
+	if (!CanAttack())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Server denied attack!!!"));
+		Client_ServerDeniedAttack(CurrentState);
+		return;
+	}
+
+	FAttackState OldState = CurrentState;
+
+	CurrentState.bIsAttacking = true;
+	CurrentState.bComboWindowOpened = false;
+	++CurrentState.AttackCount;
+
+	HandleCurrentStateChanged(OldState);
+}
+
+void UMCOAttackComponent::Client_ServerDeniedAttack_Implementation(const FAttackState& ServerCorrectState)
+{
+	if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
+	{
+		MyOwnerCharacter->StopAnimMontage();
+	}
+	
+	CurrentState = ServerCorrectState;
 }
 
 bool UMCOAttackComponent::CanAttack() const
@@ -108,6 +127,11 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
 			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
+
+			if (!HasAuthority(GetOwner()))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Play Montage, Attack Count: %d"), CurrentState.AttackCount);
+			}
 		}
 	}
 }
@@ -131,7 +155,7 @@ UAnimMontage* UMCOAttackComponent::GetAttackMontage(const uint16 InAttackCount, 
 
 void UMCOAttackComponent::BeginHitDetection()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Begin Hit Detection"));
+	// UE_LOG(LogTemp, Warning, TEXT("Begin Hit Detection"));
 
 	HitActorsThisSwing.Empty();
 
@@ -229,11 +253,11 @@ void UMCOAttackComponent::TraceAndProcessHitResults(FVector TraceStart,
 
 		if (HasAuthority(GetOwner()))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Server: %s"), *VictimActor->GetName());
+			// UE_LOG(LogTemp, Warning, TEXT("Server: %s"), *VictimActor->GetName());
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Client: %s"), *VictimActor->GetName());
+			// UE_LOG(LogTemp, Warning, TEXT("Client: %s"), *VictimActor->GetName());
 		}
 
 		HitActorsThisSwing.Add(VictimActor);
@@ -259,7 +283,7 @@ void UMCOAttackComponent::FillTraceGap(FVector CurrentStart,
 
 	float StartStep = (TwoStartDistance / FillNumber);
 
-	UE_LOG(LogTemp, Warning, TEXT("Fillers: %d"), FillNumber);
+	// UE_LOG(LogTemp, Warning, TEXT("Fillers: %d"), FillNumber);
 
 	// fill number = 4
 	// 1 2 3 4
@@ -270,16 +294,17 @@ void UMCOAttackComponent::FillTraceGap(FVector CurrentStart,
 
 		// Direction from Start -> End
 		FVector CapsuleDirection = (FillerEnd - FillerStart).GetSafeNormal();
-		
+
 		FillerEnd = FillerStart + (CapsuleDirection * CapsuleLength);
 
 		TraceAndProcessHitResults(FillerStart, FillerEnd, ActorsToIgnore, TraceColor);
 	}
 }
 
+
 void UMCOAttackComponent::OpenComboWindow()
 {
-	if (HasAuthority(GetOwner()))
+	if (HasAuthorityOrClientCanPredict(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
 
@@ -289,9 +314,10 @@ void UMCOAttackComponent::OpenComboWindow()
 	}
 }
 
+
 void UMCOAttackComponent::EndAttack()
 {
-	if (HasAuthority(GetOwner()))
+	if (HasAuthorityOrClientCanPredict(GetOwner()))
 	{
 		FAttackState OldState = CurrentState;
 
@@ -304,13 +330,10 @@ void UMCOAttackComponent::EndAttack()
 	}
 }
 
-bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
-{
-	return InActor && InActor->HasAuthority();
-}
 
 void UMCOAttackComponent::OnRep_CurrentState(const FAttackState& OldState)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnRep_CurrentState"));
 	HandleCurrentStateChanged(OldState);
 }
 
@@ -332,4 +355,22 @@ FVector UMCOAttackComponent::GetSocketLocation(ACharacter* InCharacter, FName In
 	}
 
 	return FVector::ZeroVector;
+}
+
+
+
+
+bool UMCOAttackComponent::HasAuthority(const AActor* InActor)
+{
+	return InActor && InActor->HasAuthority();
+}
+
+bool UMCOAttackComponent::LocalRoleIsAutonomousProxy(const AActor* InActor)
+{
+	return InActor && InActor->GetLocalRole() == ROLE_AutonomousProxy;
+}
+
+bool UMCOAttackComponent::HasAuthorityOrClientCanPredict(const AActor* InActor)
+{
+	return HasAuthority(InActor) || LocalRoleIsAutonomousProxy(InActor);
 }

@@ -9,10 +9,8 @@
 AMCOCharacter::AMCOCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
 	bReplicates = true;
-	SetMinNetUpdateFrequency(30.f);
-	SetNetUpdateFrequency(100.f);
+	SetNetUpdateFrequency(64.f);
 	
 	AttackComponent = CreateDefaultSubobject<UMCOAttackComponent>(TEXT("Attack Component"));
 	

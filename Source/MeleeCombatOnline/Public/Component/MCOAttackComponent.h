@@ -11,6 +11,14 @@ struct FAttackState
 {
 	GENERATED_BODY()
 
+	bool operator==(const FAttackState& Other) const
+	{
+		return bIsAttacking == Other.bIsAttacking
+			&& bComboWindowOpened == Other.bComboWindowOpened
+			&& AttackCount == Other.AttackCount
+			&& IndexOffset == Other.IndexOffset;
+	}
+
 	UPROPERTY(EditAnywhere)
 	bool bIsAttacking = false;
 
@@ -51,13 +59,10 @@ protected:
 	virtual void BeginPlay() override;
 
 private: // Function
-	UFUNCTION(Server, Reliable)
-	void Server_TryAttack();
 	void TryAttack();
 	bool CanAttack() const;
 	void HandleCurrentStateChanged(const FAttackState& OldState);
 	UAnimMontage* GetAttackMontage(const uint16 InAttackCount, const uint16 IndexOffset) const;
-	static bool HasAuthority(const AActor* InActor);
 
 	UFUNCTION()
 	void OnRep_CurrentState(const FAttackState& OldState);
@@ -78,6 +83,19 @@ private: // Function
 	                  const TArray<AActor*>& ActorsToIgnore,
 	                  FLinearColor TraceColor,
 	                  float CapsuleLength);
+	
+	
+
+
+	UFUNCTION(Server, Reliable)
+	void Server_ClientIsAboutToAttack(const FAttackState& ClientState);
+	
+	UFUNCTION(Client, Reliable)
+	void Client_ServerDeniedAttack(const FAttackState& ServerCorrectState);
+	
+	static bool HasAuthority(const AActor* InActor);
+	static bool LocalRoleIsAutonomousProxy(const AActor* InActor);
+	static bool HasAuthorityOrClientCanPredict(const AActor* InActor);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Attack")
