@@ -134,12 +134,11 @@ bool UMCOAttackComponent::CanAttack() const
 
 void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState)
 {
-	if (CurrentState.bIsAttacking && CurrentState.AttackCount > LocalHighestAttackCount)
+	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
 	{
 		if (ACharacter* MyOwnerCharacter = GetOwnerCharacter())
 		{
 			MyOwnerCharacter->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
-			LocalHighestAttackCount = CurrentState.AttackCount;
 
 			if (!HasAuthority(GetOwner()))
 			{
@@ -336,7 +335,6 @@ void UMCOAttackComponent::EndAttack()
 		CurrentState.bComboWindowOpened = false;
 		// Reset Attack Index -> 0
 		CurrentState.IndexOffset = CurrentState.AttackCount + 1;
-		LocalHighestAttackCount = CurrentState.AttackCount;
 
 		HandleCurrentStateChanged(OldState);
 	}

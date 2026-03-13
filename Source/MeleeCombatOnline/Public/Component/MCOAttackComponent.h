@@ -146,7 +146,4 @@ private: // Property
 
 	UPROPERTY()
 	TSet<AActor*> HitActorsThisSwing;
-
-	UPROPERTY()
-	uint16 LocalHighestAttackCount = 0;
 };
