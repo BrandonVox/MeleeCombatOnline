@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MCOCharacter.generated.h"
 
+class UMCO_ASC;
 class UMCOAttackComponent;
 
 UCLASS(Abstract)
@@ -22,4 +23,7 @@ protected:
 protected: // Property
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UMCOAttackComponent> AttackComponent;
+	
+	UPROPERTY(VisibleDefaultsOnly)
+	TObjectPtr<UMCO_ASC> MCO_ASC;
 };
