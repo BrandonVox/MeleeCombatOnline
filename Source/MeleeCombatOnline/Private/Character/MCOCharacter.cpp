@@ -14,7 +14,7 @@ AMCOCharacter::AMCOCharacter()
 	SetNetUpdateFrequency(64.f);
 
 	AttackComponent = CreateDefaultSubobject<UMCOAttackComponent>(TEXT("Attack Component"));
-	
+
 	MCO_ASC = CreateDefaultSubobject<UMCO_ASC>(TEXT("MCO_ASC"));
 	MCO_ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
@@ -32,4 +32,29 @@ AMCOCharacter::AMCOCharacter()
 void AMCOCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AMCOCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	if (MCO_ASC)
+	{
+		MCO_ASC->InitAbilityActorInfo(this, this);
+	}
+}
+
+void AMCOCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	if (MCO_ASC)
+	{
+		MCO_ASC->InitAbilityActorInfo(this, this);
+	}
+}
+
+UAbilitySystemComponent* AMCOCharacter::GetAbilitySystemComponent() const
+{
+	return MCO_ASC;
 }
