@@ -34,6 +34,7 @@ void AMCOCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+// Server
 void AMCOCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -41,6 +42,7 @@ void AMCOCharacter::PossessedBy(AController* NewController)
 	if (MCO_ASC)
 	{
 		MCO_ASC->InitAbilityActorInfo(this, this);
+		MCO_ASC->GiveDefaultAbilities();
 	}
 }
 

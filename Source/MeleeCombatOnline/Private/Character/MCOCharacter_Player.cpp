@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "Component/MCOAttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GAS/MCO_ASC.h"
 
 // Sets default values
 AMCOCharacter_Player::AMCOCharacter_Player()
@@ -138,6 +139,11 @@ void AMCOCharacter_Player::Input_Triggered_Attack()
 	// UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Attack"));
 	if (AttackComponent)
 	{
-		AttackComponent->LocalInputPressed();
+		// AttackComponent->LocalInputPressed();
+	}
+
+	if (MCO_ASC)
+	{
+		MCO_ASC->AbilityLocalInputPressed(1);
 	}
 }
