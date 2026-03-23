@@ -123,9 +123,7 @@ void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputAc
 {
 	const FVector2D InputValue2D = InputActionValue.Get<FVector2D>().GetClampedToMaxSize(1.f);
 
-
-	// input value X Y
-
+	// Input value X Y
 	const FVector RightDirection = CameraComponent->GetRightVector();
 	const FVector ForwardDirection = FVector::CrossProduct(RightDirection, FVector::UpVector).GetSafeNormal();
 
@@ -137,13 +135,14 @@ void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputAc
 void AMCOCharacter_Player::Input_Triggered_Attack()
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Attack"));
-	if (AttackComponent)
-	{
-		// AttackComponent->LocalInputPressed();
-	}
+	// if (AttackComponent)
+	// {
+	// AttackComponent->LocalInputPressed();
+	// }
 
 	if (MCO_ASC)
 	{
 		MCO_ASC->AbilityLocalInputPressed(1);
+		// MCO_ASC->TryActivateAbilityByClass(Class_GA_BasicAttack);
 	}
 }

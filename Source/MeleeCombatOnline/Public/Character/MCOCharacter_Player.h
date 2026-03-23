@@ -7,6 +7,7 @@
 #include "MCOCharacter.h"
 #include "MCOCharacter_Player.generated.h"
 
+class UGameplayAbility;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputMappingContext;
@@ -54,4 +55,8 @@ private: // Property
 	
 	UPROPERTY(EditDefaultsOnly, Category= "MCO Settings | Input")
 	TObjectPtr<UInputAction> InputAction_Attack;
+	
+	
+	UPROPERTY(EditDefaultsOnly, Category="MCO Settings | GAS")
+	TSubclassOf<UGameplayAbility> Class_GA_BasicAttack;
 };

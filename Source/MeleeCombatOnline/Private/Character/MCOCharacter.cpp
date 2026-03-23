@@ -13,7 +13,7 @@ AMCOCharacter::AMCOCharacter()
 	bReplicates = true;
 	SetNetUpdateFrequency(64.f);
 
-	AttackComponent = CreateDefaultSubobject<UMCOAttackComponent>(TEXT("Attack Component"));
+	// AttackComponent = CreateDefaultSubobject<UMCOAttackComponent>(TEXT("Attack Component"));
 
 	MCO_ASC = CreateDefaultSubobject<UMCO_ASC>(TEXT("MCO_ASC"));
 	MCO_ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);

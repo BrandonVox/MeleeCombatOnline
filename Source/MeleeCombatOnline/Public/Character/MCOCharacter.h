@@ -27,8 +27,8 @@ protected:
 	virtual void BeginPlay() override;
 
 protected: // Property
-	UPROPERTY(VisibleDefaultsOnly)
-	TObjectPtr<UMCOAttackComponent> AttackComponent;
+	// UPROPERTY(VisibleDefaultsOnly)
+	// TObjectPtr<UMCOAttackComponent> AttackComponent;
 
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UMCO_ASC> MCO_ASC;
