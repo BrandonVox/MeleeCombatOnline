@@ -8,9 +8,9 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Component/MCOAttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/MCO_ASC.h"
+#include "MeleeCombatOnline/MeleeCombatOnline.h"
 
 // Sets default values
 AMCOCharacter_Player::AMCOCharacter_Player()
@@ -139,6 +139,15 @@ void AMCOCharacter_Player::Input_Triggered_Attack()
 	// {
 	// AttackComponent->LocalInputPressed();
 	// }
+
+#if ENABLE_VISUAL_LOG
+	UE_VLOG(
+		this,
+		LogPressedInputGA,
+		Display,
+		TEXT("LogPressedInputGA")
+	);
+#endif
 
 	if (MCO_ASC)
 	{

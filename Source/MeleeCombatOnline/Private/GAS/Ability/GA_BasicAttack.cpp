@@ -4,6 +4,7 @@
 #include "GAS/Ability/GA_BasicAttack.h"
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "MeleeCombatOnline/MeleeCombatOnline.h"
 
 UGA_BasicAttack::UGA_BasicAttack()
 {
@@ -16,7 +17,29 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                       const FGameplayAbilityActivationInfo ActivationInfo,
                                       const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ActivateAbility"));
+	// UE_LOG(LogTemp, Warning, TEXT("ActivateAbility"));
+
+// #if ENABLE_VISUAL_LOG
+// 	UE_VLOG(
+// 		GetOwner(),
+// 		LogOnRepFalse,
+// 		Error,
+// 		TEXT("OnRep| %s -> %s | %d -> %d"),
+// 		*OldAttacking,
+// 		*CurrentAttacking,
+// 		OldState.AttackCount,
+// 		AttackState.AttackCount
+// 	);
+// #endif
+	
+	#if ENABLE_VISUAL_LOG
+		UE_VLOG(
+			GetAvatarActorFromActorInfo(),
+			LogActivateGA,
+			Warning,
+			TEXT("ActivateGA")
+		);
+	#endif
 
 	UAbilityTask_PlayMontageAndWait* Task_PlayMontage_Attack =
 		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
@@ -32,6 +55,9 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		);
 
 	Task_PlayMontage_Attack->OnCompleted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
+	Task_PlayMontage_Attack->OnBlendOut.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
+	Task_PlayMontage_Attack->OnInterrupted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
+	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 
 	Task_PlayMontage_Attack->ReadyForActivation();
 }
@@ -40,7 +66,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
                                  const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
                                  bool bWasCancelled)
 {
-	UE_LOG(LogTemp, Warning, TEXT("EndAbility"));
+	// UE_LOG(LogTemp, Warning, TEXT("EndAbility"));
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
