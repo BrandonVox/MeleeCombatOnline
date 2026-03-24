@@ -4,6 +4,7 @@
 #include "Component/MCOAttackComponent.h"
 
 #include "GameFramework/Character.h"
+#include "MeleeCombatOnline/MeleeCombatOnline.h"
 #include "Net/UnrealNetwork.h"
 
 UMCOAttackComponent::UMCOAttackComponent()
@@ -85,6 +86,14 @@ void UMCOAttackComponent::HandleCurrentStateChanged(const FAttackState& OldState
 {
 	if (CurrentState.bIsAttacking && CurrentState.AttackCount > OldState.AttackCount)
 	{
+#if ENABLE_VISUAL_LOG
+		UE_VLOG(
+			GetOwner(),
+			LogAttack,
+			Warning,
+			TEXT("LogAttack")
+		);
+#endif
 		GetOwner<ACharacter>()->PlayAnimMontage(GetAttackMontage(CurrentState.AttackCount, CurrentState.IndexOffset));
 	}
 }

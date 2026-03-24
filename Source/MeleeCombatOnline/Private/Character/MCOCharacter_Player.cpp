@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "Component/MCOAttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MeleeCombatOnline/MeleeCombatOnline.h"
 
 // Sets default values
 AMCOCharacter_Player::AMCOCharacter_Player()
@@ -135,7 +136,16 @@ void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputAc
 
 void AMCOCharacter_Player::Input_Triggered_Attack()
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Input_Triggered_Attack"));
+	
+#if ENABLE_VISUAL_LOG
+	UE_VLOG(
+		this,
+		LogPressedInput,
+		Display,
+		TEXT("LogPressedInput")
+	);
+#endif
+
 	if (AttackComponent)
 	{
 		AttackComponent->LocalInputPressed();
