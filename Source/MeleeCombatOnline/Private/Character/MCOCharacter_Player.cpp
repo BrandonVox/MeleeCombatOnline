@@ -8,7 +8,6 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Component/MCOAttackComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MeleeCombatOnline/MeleeCombatOnline.h"
 
@@ -146,8 +145,5 @@ void AMCOCharacter_Player::Input_Triggered_Attack()
 	);
 #endif
 
-	if (AttackComponent)
-	{
-		AttackComponent->LocalInputPressed();
-	}
+
 }

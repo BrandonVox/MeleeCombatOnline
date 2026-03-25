@@ -3,25 +3,27 @@
 
 #include "Character/MCOCharacter.h"
 
-#include "Component/MCOAttackComponent.h"
+#include "GAS/Component/MCO_ASC.h"
 
 AMCOCharacter::AMCOCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
+	SetNetUpdateFrequency(64.f);
 	
-	// replication
-	// character on server send update to clients
-	// how many times in 1 second
-	SetMinNetUpdateFrequency(30.f);
-	SetNetUpdateFrequency(100.f);
-	// 30 -> 100 updates per second
+	MCO_ASC = CreateDefaultSubobject<UMCO_ASC>(TEXT("MCO_ASC"));
+	MCO_ASC->SetIsReplicated(true);
+	MCO_ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 	
-	AttackComponent = CreateDefaultSubobject<UMCOAttackComponent>(TEXT("Attack Component"));
 }
 
 void AMCOCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+UAbilitySystemComponent* AMCOCharacter::GetAbilitySystemComponent() const
+{
+	return MCO_ASC;
 }
 

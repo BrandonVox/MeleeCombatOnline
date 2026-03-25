@@ -4,22 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "MCOCharacter.generated.h"
 
-class UMCOAttackComponent;
+
+class UMCO_ASC;
 
 UCLASS()
-class MELEECOMBATONLINE_API AMCOCharacter : public ACharacter
+class MELEECOMBATONLINE_API AMCOCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	AMCOCharacter();
+	
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected:
 	virtual void BeginPlay() override;
 
 protected: // Property
 	UPROPERTY(VisibleDefaultsOnly)
-	TObjectPtr<UMCOAttackComponent> AttackComponent;
+	TObjectPtr<UMCO_ASC> MCO_ASC;
 };
