@@ -29,9 +29,11 @@ void AMCOCharacter::PossessedBy(AController* NewController)
 	if (MCO_ASC)
 	{
 		MCO_ASC->InitAbilityActorInfo(this, this);
+		MCO_ASC->GiveDefaultAbilities();
 	}
 }
 
+// Clients
 void AMCOCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
