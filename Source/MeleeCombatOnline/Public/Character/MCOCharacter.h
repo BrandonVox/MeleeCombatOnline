@@ -17,8 +17,11 @@ class MELEECOMBATONLINE_API AMCOCharacter : public ACharacter, public IAbilitySy
 
 public:
 	AMCOCharacter();
-	
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 
 protected:
 	virtual void BeginPlay() override;
