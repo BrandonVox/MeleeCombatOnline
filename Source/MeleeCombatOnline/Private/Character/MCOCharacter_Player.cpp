@@ -140,7 +140,7 @@ void AMCOCharacter_Player::Input_Triggered_Attack()
 	UE_VLOG(
 		this,
 		LogPressedInput,
-		Display,
+		Warning,
 		TEXT("LogPressedInput")
 	);
 #endif
