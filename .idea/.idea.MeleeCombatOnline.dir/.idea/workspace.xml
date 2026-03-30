@@ -8,10 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/MCOGameplayTag.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/MCOGameplayTag.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Animation/MCOAnimNotify_EndAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Animation/MCOAnimNotify_EndAttack.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -230,7 +227,7 @@
       <workItem from="1774391659663" duration="3632000" />
       <workItem from="1774488041223" duration="4015000" />
       <workItem from="1774746063685" duration="2456000" />
-      <workItem from="1774850959286" duration="1903000" />
+      <workItem from="1774850959286" duration="3347000" />
     </task>
     <servers />
   </component>
