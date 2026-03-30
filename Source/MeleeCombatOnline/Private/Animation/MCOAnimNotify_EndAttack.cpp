@@ -4,7 +4,7 @@
 #include "Animation/MCOAnimNotify_EndAttack.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Component/MCOAttackComponent.h"
+#include "GAS/MCOGameplayTag.h"
 
 void UMCOAnimNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                       const FAnimNotifyEventReference& EventReference)
@@ -30,7 +30,7 @@ void UMCOAnimNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor
 	(
 		MeshComp->GetOwner(),
-		FGameplayTag::RequestGameplayTag(TEXT("Event.EndAttack")),
+		MCOGameplayTag::Event_EndAttack,
 		FGameplayEventData()
 	);
 }
