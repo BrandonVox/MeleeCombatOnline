@@ -4,6 +4,8 @@
 #include "GAS/Ability/GA_BasicAttack.h"
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "GAS/MCOGameplayTag.h"
 
 UGA_BasicAttack::UGA_BasicAttack()
 {
@@ -28,13 +30,20 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			NAME_None,
 			false
 		);
-	
+
 	Task_PlayMontage_Attack->OnCompleted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->OnBlendOut.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->OnInterrupted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
-	
+
 	Task_PlayMontage_Attack->ReadyForActivation();
+
+	UAbilityTask_WaitGameplayEvent* Task_WaitEvent_EndAttack =
+		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, MCOGameplayTag::Event_EndAttack);
+	
+	Task_WaitEvent_EndAttack->EventReceived.AddDynamic(this, &UGA_BasicAttack::HandleReceiveEvent_EndAttack);
+	
+	Task_WaitEvent_EndAttack->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -44,4 +53,12 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UGA_BasicAttack::HandleReceiveEvent_EndAttack(FGameplayEventData EventData)
+{
+	
+	UE_LOG(LogTemp, Warning, TEXT("HandleReceiveEvent_EndAttack"));
+	
+	K2_EndAbility();
 }

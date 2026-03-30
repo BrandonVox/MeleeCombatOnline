@@ -26,6 +26,10 @@ protected:
 	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
 	                        bool bWasCancelled) override;
 	
+private: // Function
+	UFUNCTION()
+	void HandleReceiveEvent_EndAttack(FGameplayEventData EventData);
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;
