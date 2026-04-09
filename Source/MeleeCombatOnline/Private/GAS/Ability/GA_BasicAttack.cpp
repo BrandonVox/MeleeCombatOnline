@@ -28,7 +28,7 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			AttackMontage,
 			1.f,
 			NAME_None,
-			false
+			true
 		);
 
 	Task_PlayMontage_Attack->OnCompleted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
@@ -37,13 +37,6 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 
 	Task_PlayMontage_Attack->ReadyForActivation();
-
-	UAbilityTask_WaitGameplayEvent* Task_WaitEvent_EndAttack =
-		UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, MCOGameplayTag::Event_EndAttack);
-	
-	Task_WaitEvent_EndAttack->EventReceived.AddDynamic(this, &UGA_BasicAttack::HandleReceiveEvent_EndAttack);
-	
-	Task_WaitEvent_EndAttack->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

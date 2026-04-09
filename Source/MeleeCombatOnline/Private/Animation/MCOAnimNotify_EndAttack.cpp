@@ -27,10 +27,10 @@ void UMCOAnimNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		return;
 	}
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor
-	(
-		MeshComp->GetOwner(),
-		MCOGameplayTag::Event_EndAttack,
-		FGameplayEventData()
-	);
+	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor
+	// (
+	// 	MeshComp->GetOwner(),
+	// 	MCOGameplayTag::Event_EndAttack,
+	// 	FGameplayEventData()
+	// );
 }
