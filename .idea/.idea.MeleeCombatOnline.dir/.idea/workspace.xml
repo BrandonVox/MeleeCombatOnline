@@ -9,8 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Ability/GA_BasicAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Ability/GA_BasicAttack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Ability/GA_BasicAttack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Ability/GA_BasicAttack.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +24,9 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/CoreMinimal.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Serialization/CompactBinary.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Templates/UnrealTypeTraits.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/UObject/NameTypes.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/UObject/UnrealNames.inl" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Engine/Classes/Components/ActorComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Engine/Classes/GameFramework/Pawn.h" root0="FORCE_HIGHLIGHTING" />
@@ -230,6 +231,7 @@
       <workItem from="1774488041223" duration="4015000" />
       <workItem from="1774746063685" duration="2456000" />
       <workItem from="1774850959286" duration="4439000" />
+      <workItem from="1775716755938" duration="1030000" />
     </task>
     <servers />
   </component>
