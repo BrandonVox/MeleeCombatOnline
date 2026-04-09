@@ -28,9 +28,11 @@ protected:
 	
 private: // Function
 	UFUNCTION()
-	void HandleReceiveEvent_EndAttack(FGameplayEventData EventData);
+	void ComboWindowOpened(FGameplayEventData EventData);
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+	FName SectionName_Next = NAME_None;
 };

@@ -37,6 +37,19 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 
 	Task_PlayMontage_Attack->ReadyForActivation();
+
+	UAbilityTask_WaitGameplayEvent* Task_Event_OpenComboWindow = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
+	(
+		this,
+		MCOGameplayTag::Event_BasicAttack_Combo_Open,
+		nullptr,
+		false,
+		false
+	);
+	
+	Task_Event_OpenComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowOpened);
+	
+	Task_Event_OpenComboWindow->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -48,10 +61,10 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UGA_BasicAttack::HandleReceiveEvent_EndAttack(FGameplayEventData EventData)
+void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 {
+	SectionName_Next = EventData.EventTag.GetTagLeafName();
 	
-	UE_LOG(LogTemp, Warning, TEXT("HandleReceiveEvent_EndAttack"));
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
 	
-	K2_EndAbility();
 }
