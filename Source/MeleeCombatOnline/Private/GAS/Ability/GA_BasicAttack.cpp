@@ -63,16 +63,12 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_Event_CloseComboWindow->ReadyForActivation();
 }
 
-// Not Function Callback
-// Called Function
-// Might be called multiple times
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                  const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
                                  bool bWasCancelled)
 {
 	if (bIsActive)
 	{
-		// only run once
 		UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
 		SectionName_Next = NAME_None;
 	}
