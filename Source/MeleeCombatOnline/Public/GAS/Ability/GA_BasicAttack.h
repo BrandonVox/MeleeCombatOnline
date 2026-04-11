@@ -33,6 +33,9 @@ private: // Function
 	UFUNCTION()
 	void ComboWindowClosed(FGameplayEventData EventData);
 	
+	UFUNCTION()
+	void InputPressed(float TimeWaited);
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;

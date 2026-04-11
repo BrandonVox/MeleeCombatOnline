@@ -5,6 +5,7 @@
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 #include "GAS/MCOGameplayTag.h"
 
 UGA_BasicAttack::UGA_BasicAttack()
@@ -61,6 +62,11 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	);
 	Task_Event_CloseComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowClosed);
 	Task_Event_CloseComboWindow->ReadyForActivation();
+	
+	// Input Press
+	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
+	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::InputPressed);
+	Task_InputPress->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -88,4 +94,9 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
+}
+
+void UGA_BasicAttack::InputPressed(float TimeWaited)
+{
+	UE_LOG(LogTemp, Warning, TEXT("InputPressed"));
 }
