@@ -62,11 +62,6 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	);
 	Task_Event_CloseComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowClosed);
 	Task_Event_CloseComboWindow->ReadyForActivation();
-	
-	// Input Press
-	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
-	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::InputPressed);
-	Task_InputPress->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -87,6 +82,11 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 	SectionName_Next = EventData.EventTag.GetTagLeafName();
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
+
+	// Input Press
+	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
+	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::InputPressed);
+	Task_InputPress->ReadyForActivation();
 }
 
 void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
@@ -99,4 +99,24 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 void UGA_BasicAttack::InputPressed(float TimeWaited)
 {
 	UE_LOG(LogTemp, Warning, TEXT("InputPressed"));
+
+	// Jump to Section
+	if (SectionName_Next == NAME_None)
+	{
+		return;
+	}
+	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
+	if (MeshComp == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* MyAnimInstance = MeshComp->GetAnimInstance();
+	if (MyAnimInstance == nullptr)
+	{
+		return;
+	}
+
+	MyAnimInstance->Montage_JumpToSection(SectionName_Next, AttackMontage);
+	SectionName_Next = NAME_None;
 }
