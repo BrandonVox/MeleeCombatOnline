@@ -49,7 +49,7 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	);
 	Task_Event_OpenComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowOpened);
 	Task_Event_OpenComboWindow->ReadyForActivation();
-	
+
 	// Close Combo Window
 	UAbilityTask_WaitGameplayEvent* Task_Event_CloseComboWindow = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
 	(
@@ -63,11 +63,19 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_Event_CloseComboWindow->ReadyForActivation();
 }
 
+// Not Function Callback
+// Called Function
+// Might be called multiple times
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                  const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
                                  bool bWasCancelled)
 {
-	UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
+	if (bIsActive)
+	{
+		// only run once
+		UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
+		SectionName_Next = NAME_None;
+	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -75,14 +83,13 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 {
 	SectionName_Next = EventData.EventTag.GetTagLeafName();
-	
+
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
-	
 }
 
 void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 {
 	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
-	
+
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
