@@ -30,6 +30,9 @@ private: // Function
 	UFUNCTION()
 	void ComboWindowOpened(FGameplayEventData EventData);
 	
+	UFUNCTION()
+	void ComboWindowClosed(FGameplayEventData EventData);
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;

@@ -21,6 +21,7 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	UE_LOG(LogTemp, Warning, TEXT("ActivateAbility C++"));
 
+	// Play Attack Montage
 	UAbilityTask_PlayMontageAndWait* Task_PlayMontage_Attack =
 		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
@@ -35,9 +36,9 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_PlayMontage_Attack->OnBlendOut.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->OnInterrupted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
-
 	Task_PlayMontage_Attack->ReadyForActivation();
 
+	// Open Combo Window
 	UAbilityTask_WaitGameplayEvent* Task_Event_OpenComboWindow = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
 	(
 		this,
@@ -46,10 +47,20 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		false,
 		false
 	);
-	
 	Task_Event_OpenComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowOpened);
-	
 	Task_Event_OpenComboWindow->ReadyForActivation();
+	
+	// Close Combo Window
+	UAbilityTask_WaitGameplayEvent* Task_Event_CloseComboWindow = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
+	(
+		this,
+		MCOGameplayTag::Event_BasicAttack_Combo_Close,
+		nullptr,
+		false,
+		true
+	);
+	Task_Event_CloseComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowClosed);
+	Task_Event_CloseComboWindow->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -67,4 +78,11 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 	
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
 	
+}
+
+void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
+{
+	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
+	
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
