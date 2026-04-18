@@ -9,6 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MeleeCombatOnline.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/MeleeCombatOnline.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/MeleeCombatOnline.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/MeleeCombatOnline.Build.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +59,9 @@
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/asio/1.30.2/asio/execution/any_executor.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/MCOGameplayTag.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_ValueBar.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/MCOGameplayTag.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/UI/Widget_ValueBar.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
