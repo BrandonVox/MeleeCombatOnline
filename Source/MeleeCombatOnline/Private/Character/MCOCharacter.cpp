@@ -3,6 +3,7 @@
 
 #include "Character/MCOCharacter.h"
 
+#include "Component/WidgetComponent_Overhead.h"
 #include "GAS/Component/MCO_ASC.h"
 
 AMCOCharacter::AMCOCharacter()
@@ -14,6 +15,14 @@ AMCOCharacter::AMCOCharacter()
 	MCO_ASC = CreateDefaultSubobject<UMCO_ASC>(TEXT("MCO_ASC"));
 	MCO_ASC->SetIsReplicated(true);
 	MCO_ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	
+	// Widget Component _ Overhead
+	WidgetComponent_Overhead = CreateDefaultSubobject<UWidgetComponent_Overhead>(TEXT("WidgetComponent_Overhead"));
+	WidgetComponent_Overhead->SetupAttachment(GetRootComponent());
+	WidgetComponent_Overhead->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+	WidgetComponent_Overhead->SetWidgetSpace(EWidgetSpace::Screen);
+	WidgetComponent_Overhead->SetDrawAtDesiredSize(true);
+	// user widget class -> update in blueprint
 }
 
 void AMCOCharacter::BeginPlay()

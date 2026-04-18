@@ -8,6 +8,7 @@
 #include "MCOCharacter.generated.h"
 
 
+class UWidgetComponent_Overhead;
 class UMCO_ASC;
 
 UCLASS()
@@ -29,4 +30,7 @@ protected:
 protected: // Property
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UMCO_ASC> MCO_ASC;
+	
+	UPROPERTY(VisibleDefaultsOnly)
+	TObjectPtr<UWidgetComponent_Overhead> WidgetComponent_Overhead;
 };
