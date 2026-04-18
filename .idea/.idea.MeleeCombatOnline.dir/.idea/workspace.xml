@@ -7,7 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="" />
+    <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Content/MeleeCombatOnline/Character/Aurora/BP_PlayerCharacter_Aurora.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MeleeCombatOnline/Character/Aurora/BP_PlayerCharacter_Aurora.uasset" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
