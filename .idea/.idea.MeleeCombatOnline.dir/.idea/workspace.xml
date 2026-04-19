@@ -58,11 +58,13 @@
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/asio/1.30.2/asio/any_completion_handler.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/asio/1.30.2/asio/execution/any_executor.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Component/WidgetComponent_Overhead.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Attribute/AttributeSet_Base.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/MCOGameplayTag.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_Overhead.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_ValueBar.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Component/WidgetComponent_Overhead.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Attribute/AttributeSet_Base.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/MCOGameplayTag.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/UI/Widget_Overhead.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/UI/Widget_ValueBar.h" root0="FORCE_HIGHLIGHTING" />
@@ -259,7 +261,8 @@
       <workItem from="1774850959286" duration="4439000" />
       <workItem from="1775716755938" duration="5800000" />
       <workItem from="1776474231398" duration="340000" />
-      <workItem from="1776522402261" duration="826000" />
+      <workItem from="1776522402261" duration="1428000" />
+      <workItem from="1776556299230" duration="2550000" />
     </task>
     <servers />
   </component>

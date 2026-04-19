@@ -8,6 +8,7 @@
 #include "MCOCharacter.generated.h"
 
 
+class UAttributeSet_Base;
 class UWidgetComponent_Overhead;
 class UMCO_ASC;
 
@@ -33,4 +34,7 @@ protected: // Property
 	
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UWidgetComponent_Overhead> WidgetComponent_Overhead;
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UAttributeSet_Base> AttributeSet_Base;
 };

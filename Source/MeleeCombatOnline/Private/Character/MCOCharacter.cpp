@@ -4,6 +4,7 @@
 #include "Character/MCOCharacter.h"
 
 #include "Component/WidgetComponent_Overhead.h"
+#include "GAS/Attribute/AttributeSet_Base.h"
 #include "GAS/Component/MCO_ASC.h"
 
 AMCOCharacter::AMCOCharacter()
@@ -12,9 +13,13 @@ AMCOCharacter::AMCOCharacter()
 	bReplicates = true;
 	SetNetUpdateFrequency(64.f);
 
+	// ASC
 	MCO_ASC = CreateDefaultSubobject<UMCO_ASC>(TEXT("MCO_ASC"));
 	MCO_ASC->SetIsReplicated(true);
 	MCO_ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	
+	// Attribute Set
+	AttributeSet_Base = CreateDefaultSubobject<UAttributeSet_Base>(TEXT("AttributeSet_Base"));
 	
 	// Widget Component _ Overhead
 	WidgetComponent_Overhead = CreateDefaultSubobject<UWidgetComponent_Overhead>(TEXT("WidgetComponent_Overhead"));
@@ -23,6 +28,9 @@ AMCOCharacter::AMCOCharacter()
 	WidgetComponent_Overhead->SetWidgetSpace(EWidgetSpace::Screen);
 	WidgetComponent_Overhead->SetDrawAtDesiredSize(true);
 	// user widget class -> update in blueprint
+	
+	
+
 }
 
 void AMCOCharacter::BeginPlay()
