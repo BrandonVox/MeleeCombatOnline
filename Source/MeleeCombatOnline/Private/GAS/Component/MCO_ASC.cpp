@@ -3,6 +3,8 @@
 
 #include "GAS/Component/MCO_ASC.h"
 
+#include "Utility/MCOHelper.h"
+
 void UMCO_ASC::GiveDefaultAbilities()
 {
 	GiveAbility(FGameplayAbilitySpec(Class_GA_BasicAttack, 1, 1));
@@ -10,15 +12,11 @@ void UMCO_ASC::GiveDefaultAbilities()
 
 void UMCO_ASC::ApplyInitialEffects()
 {
-	if (GetOwner() == nullptr)
+	if (!UMCOHelper::HasAuthority(GetOwner()))
 	{
 		return;
 	}
 	
-	if (!GetOwner()->HasAuthority())
-	{
-		return;
-	}
 	
 	for (const TSubclassOf<UGameplayEffect>& Class_Effect : Classes_GE_Initial)
 	{

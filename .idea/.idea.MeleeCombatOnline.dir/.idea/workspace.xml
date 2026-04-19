@@ -9,9 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Character/MCOCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Character/MCOCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Component/MCO_ASC.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Component/MCO_ASC.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,11 +62,13 @@
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/MCOGameplayTag.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_Overhead.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_ValueBar.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Utility/MCOHelper.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Component/WidgetComponent_Overhead.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Attribute/AttributeSet_Base.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/MCOGameplayTag.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/UI/Widget_Overhead.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/UI/Widget_ValueBar.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Utility/MCOHelper.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -264,7 +264,7 @@
       <workItem from="1776474231398" duration="340000" />
       <workItem from="1776522402261" duration="1428000" />
       <workItem from="1776556299230" duration="2909000" />
-      <workItem from="1776559892720" duration="1901000" />
+      <workItem from="1776559892720" duration="2594000" />
     </task>
     <servers />
   </component>
