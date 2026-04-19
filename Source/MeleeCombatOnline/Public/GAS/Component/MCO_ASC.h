@@ -13,12 +13,15 @@ UCLASS()
 class MELEECOMBATONLINE_API UMCO_ASC : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
+
 public:
 	void GiveDefaultAbilities();
-	
+	void ApplyInitialEffects();
+
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | GAS")
 	TSubclassOf<UGameplayAbility> Class_GA_BasicAttack;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | GAS")
+	TArray<TSubclassOf<UGameplayEffect>> Classes_GE_Initial;
 };

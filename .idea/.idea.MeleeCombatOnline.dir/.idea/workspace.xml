@@ -10,7 +10,8 @@
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Character/MCOCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Character/MCOCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Character/MCOCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Character/MCOCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Component/MCO_ASC.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Component/MCO_ASC.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -262,7 +263,8 @@
       <workItem from="1775716755938" duration="5800000" />
       <workItem from="1776474231398" duration="340000" />
       <workItem from="1776522402261" duration="1428000" />
-      <workItem from="1776556299230" duration="2550000" />
+      <workItem from="1776556299230" duration="2909000" />
+      <workItem from="1776559892720" duration="1901000" />
     </task>
     <servers />
   </component>

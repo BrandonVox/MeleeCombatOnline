@@ -47,6 +47,7 @@ void AMCOCharacter::PossessedBy(AController* NewController)
 	{
 		MCO_ASC->InitAbilityActorInfo(this, this);
 		MCO_ASC->GiveDefaultAbilities();
+		MCO_ASC->ApplyInitialEffects();
 	}
 }
 
