@@ -9,7 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Component/WidgetComponent_Overhead.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Component/WidgetComponent_Overhead.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Component/WidgetComponent_Overhead.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Component/WidgetComponent_Overhead.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +53,7 @@
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/GameplayTags/Public/NativeGameplayTags.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/GameplayTasks/Private/GameplayTask.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/MovieScene/Public/EntitySystem/MovieSceneComponentTypeIDs.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/UMG/Public/Components/WidgetComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/OpenSSL/1.1.1t/include/Win64/VS2015/openssl/asn1err.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/OpenSSL/1.1.1t/include/Win64/VS2015/openssl/asn1t.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/asio/1.30.2/asio/any_completion_handler.hpp" root0="FORCE_HIGHLIGHTING" />
@@ -265,6 +267,7 @@
       <workItem from="1776522402261" duration="1428000" />
       <workItem from="1776556299230" duration="2909000" />
       <workItem from="1776559892720" duration="2594000" />
+      <workItem from="1776660550504" duration="1777000" />
     </task>
     <servers />
   </component>
