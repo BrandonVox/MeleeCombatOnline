@@ -40,7 +40,7 @@ void UWidgetComponent_Overhead::BeginPlay()
 
 void UWidgetComponent_Overhead::UpdateHealthBar()
 {
-	UWidget_Overhead* MyWidget_Overhead = Cast<UWidget_Overhead>(GetUserWidgetObject());
+	UWidget_Overhead* MyWidget_Overhead = GetWidget_Overhead();
 	
 	if (MyWidget_Overhead == nullptr)
 	{
@@ -48,4 +48,14 @@ void UWidgetComponent_Overhead::UpdateHealthBar()
 	}
 	
 	MyWidget_Overhead->UpdateHealthBar(CachedHealth, CachedMaxHealth);
+}
+
+UWidget_Overhead* UWidgetComponent_Overhead::GetWidget_Overhead()
+{
+	if (CachedWidget_Overhead == nullptr)
+	{
+		CachedWidget_Overhead = Cast<UWidget_Overhead>(GetUserWidgetObject());
+	}
+	
+	return CachedWidget_Overhead;
 }
