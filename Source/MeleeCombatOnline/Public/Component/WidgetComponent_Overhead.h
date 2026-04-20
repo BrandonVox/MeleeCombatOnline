@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "WidgetComponent_Overhead.generated.h"
 
+struct FOnAttributeChangeData;
 class UWidget_Overhead;
 /**
  * 
@@ -17,16 +18,19 @@ class MELEECOMBATONLINE_API UWidgetComponent_Overhead : public UWidgetComponent
 
 public:
 	virtual void BeginPlay() override;
-	
+
 private: // Function
 	void UpdateHealthBar();
-	
+
 	UWidget_Overhead* GetWidget_Overhead();
+
+	void ValueChanged_Health(const FOnAttributeChangeData& AttributeChangeData);
+	void ValueChanged_MaxHealth(const FOnAttributeChangeData& AttributeChangeData);
 
 private: // Property
 	float CachedHealth = 0.f;
 	float CachedMaxHealth = 0.f;
-	
+
 	UPROPERTY()
 	TObjectPtr<UWidget_Overhead> CachedWidget_Overhead;
 };

@@ -36,17 +36,24 @@ void UWidgetComponent_Overhead::BeginPlay()
 	CachedMaxHealth = OwnerASC->GetGameplayAttributeValue(UAttributeSet_Base::GetMaxHealthAttribute(), bFound);
 
 	UpdateHealthBar();
+
+	// Bind Delegate
+	OwnerASC->GetGameplayAttributeValueChangeDelegate(UAttributeSet_Base::GetHealthAttribute())
+	        .AddUObject(this, &UWidgetComponent_Overhead::ValueChanged_Health);
+
+	OwnerASC->GetGameplayAttributeValueChangeDelegate(UAttributeSet_Base::GetMaxHealthAttribute())
+	        .AddUObject(this, &UWidgetComponent_Overhead::ValueChanged_MaxHealth);
 }
 
 void UWidgetComponent_Overhead::UpdateHealthBar()
 {
 	UWidget_Overhead* MyWidget_Overhead = GetWidget_Overhead();
-	
+
 	if (MyWidget_Overhead == nullptr)
 	{
 		return;
 	}
-	
+
 	MyWidget_Overhead->UpdateHealthBar(CachedHealth, CachedMaxHealth);
 }
 
@@ -56,6 +63,18 @@ UWidget_Overhead* UWidgetComponent_Overhead::GetWidget_Overhead()
 	{
 		CachedWidget_Overhead = Cast<UWidget_Overhead>(GetUserWidgetObject());
 	}
-	
+
 	return CachedWidget_Overhead;
+}
+
+void UWidgetComponent_Overhead::ValueChanged_Health(const FOnAttributeChangeData& AttributeChangeData)
+{
+	CachedHealth = AttributeChangeData.NewValue;
+	UpdateHealthBar();
+}
+
+void UWidgetComponent_Overhead::ValueChanged_MaxHealth(const FOnAttributeChangeData& AttributeChangeData)
+{
+	CachedMaxHealth = AttributeChangeData.NewValue;
+	UpdateHealthBar();
 }
