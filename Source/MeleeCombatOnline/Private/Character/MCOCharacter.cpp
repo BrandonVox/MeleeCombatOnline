@@ -29,7 +29,8 @@ AMCOCharacter::AMCOCharacter()
 	WidgetComponent_Overhead->SetDrawAtDesiredSize(true);
 	// user widget class -> update in blueprint
 	
-	
+	// Mesh Component
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 }
 
