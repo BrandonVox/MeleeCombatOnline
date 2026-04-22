@@ -4,6 +4,7 @@
 #include "Character/MCOCharacter.h"
 
 #include "Component/WidgetComponent_Overhead.h"
+#include "Components/CapsuleComponent.h"
 #include "GAS/Attribute/AttributeSet_Base.h"
 #include "GAS/Component/MCO_ASC.h"
 
@@ -29,7 +30,11 @@ AMCOCharacter::AMCOCharacter()
 	WidgetComponent_Overhead->SetDrawAtDesiredSize(true);
 	// user widget class -> update in blueprint
 	
+	// Capsule Component
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	
 	// Mesh Component
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 }
