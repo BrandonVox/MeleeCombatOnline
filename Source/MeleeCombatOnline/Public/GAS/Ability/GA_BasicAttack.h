@@ -25,32 +25,54 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
 	                        bool bWasCancelled) override;
-	
+
 private: // Function
 	UFUNCTION()
 	void ComboWindowOpened(FGameplayEventData EventData);
-	
+
 	UFUNCTION()
 	void ComboWindowClosed(FGameplayEventData EventData);
-	
+
 	UFUNCTION()
 	void HitDetectionRequested(FGameplayEventData EventData);
-	
+
 	UFUNCTION()
 	void HitDetectionRequested_Begin(FGameplayEventData EventData);
-	
+
 	UFUNCTION()
 	void HitDetectionRequested_End(FGameplayEventData EventData);
-	
+
 	UFUNCTION()
 	void HitDetectionRequested_Tick(FGameplayEventData EventData);
-	
+
 	UFUNCTION()
 	void InputPressed(float TimeWaited);
-	
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;
-	
+
 	FName SectionName_Next = NAME_None;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	FName SocketName_Start = FName(TEXT("Sword_Base"));
+
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	FName SocketName_End = FName(TEXT("Sword_Tip"));
+
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	float TraceRadius = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	float DrawTime = 5.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	FLinearColor TraceColor = FLinearColor::Red;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	FLinearColor TraceHitColor = FLinearColor::Green;
 };

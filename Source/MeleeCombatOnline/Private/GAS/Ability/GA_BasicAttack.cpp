@@ -7,6 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 #include "GAS/MCOGameplayTag.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UGA_BasicAttack::UGA_BasicAttack()
 {
@@ -62,8 +63,8 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	);
 	Task_Event_CloseComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowClosed);
 	Task_Event_CloseComboWindow->ReadyForActivation();
-	
-	
+
+
 	// Hit Detection
 	UAbilityTask_WaitGameplayEvent* Task_Event_HitDetection = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
 	(
@@ -112,7 +113,7 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
 {
 	FGameplayTag GivenTag = EventData.EventTag;
-	
+
 	if (GivenTag.MatchesTagExact(MCOGameplayTag::Event_HitDetection_Begin))
 	{
 		HitDetectionRequested_Begin(EventData);
@@ -140,6 +141,40 @@ void UGA_BasicAttack::HitDetectionRequested_End(FGameplayEventData EventData)
 void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Tick"));
+
+
+	// Socket Location
+	// Mesh Comp
+	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
+	
+	if (MeshComp == nullptr)
+	{
+		return;
+	}
+	
+	FVector TraceStart = MeshComp->GetSocketLocation(SocketName_Start);
+	FVector TraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
+
+	TArray<FHitResult> OutHits;
+	UKismetSystemLibrary::SphereTraceMultiForObjects
+	(
+		this,
+		TraceStart,
+		TraceEnd,
+		TraceRadius,
+		TraceObjectTypes,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::ForDuration,
+		OutHits,
+		false,
+		TraceColor,
+		TraceHitColor,
+		DrawTime
+	);
 }
 
 void UGA_BasicAttack::InputPressed(float TimeWaited)
