@@ -8,7 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Character/MCOCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Character/MCOCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +71,7 @@
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/OpenSSL/1.1.1t/include/Win64/VS2015/openssl/asn1t.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/asio/1.30.2/asio/any_completion_handler.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/ThirdParty/asio/1.30.2/asio/execution/any_executor.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Animation/ANS_HitDetection.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Component/WidgetComponent_Overhead.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Attribute/AttributeSet_Base.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Component/MCO_ASC.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -78,6 +79,7 @@
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_Overhead.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/UI/Widget_ValueBar.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Private/Utility/MCOHelper.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Animation/ANS_HitDetection.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/Component/WidgetComponent_Overhead.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Attribute/AttributeSet_Base.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/MCOGameplayTag.h" root0="FORCE_HIGHLIGHTING" />
@@ -281,6 +283,7 @@
       <workItem from="1776556299230" duration="2909000" />
       <workItem from="1776559892720" duration="2594000" />
       <workItem from="1776660550504" duration="3376000" />
+      <workItem from="1777008830517" duration="1431000" />
     </task>
     <servers />
   </component>
