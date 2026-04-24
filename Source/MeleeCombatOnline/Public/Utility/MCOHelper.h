@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "MCOHelper.generated.h"
 
+struct FGameplayTag;
 /**
  * 
  */
@@ -16,5 +17,7 @@ class MELEECOMBATONLINE_API UMCOHelper : public UBlueprintFunctionLibrary
 	
 public:
 	static bool HasAuthority(const AActor* InActor);
+	
+	static void SendGameplayEvent(USkeletalMeshComponent* MeshComp, FGameplayTag EventTag);
 	
 };

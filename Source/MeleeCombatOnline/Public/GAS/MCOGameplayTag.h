@@ -15,5 +15,10 @@ namespace MCOGameplayTag
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_BasicAttack_Combo_Open_4);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_BasicAttack_Combo_Open_5);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_BasicAttack_Combo_Open_6);
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_Begin);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_End);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_Tick);
 }
 
