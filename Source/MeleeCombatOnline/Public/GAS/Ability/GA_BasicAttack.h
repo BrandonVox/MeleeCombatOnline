@@ -34,6 +34,18 @@ private: // Function
 	void ComboWindowClosed(FGameplayEventData EventData);
 	
 	UFUNCTION()
+	void HitDetectionRequested(FGameplayEventData EventData);
+	
+	UFUNCTION()
+	void HitDetectionRequested_Begin(FGameplayEventData EventData);
+	
+	UFUNCTION()
+	void HitDetectionRequested_End(FGameplayEventData EventData);
+	
+	UFUNCTION()
+	void HitDetectionRequested_Tick(FGameplayEventData EventData);
+	
+	UFUNCTION()
 	void InputPressed(float TimeWaited);
 	
 private:

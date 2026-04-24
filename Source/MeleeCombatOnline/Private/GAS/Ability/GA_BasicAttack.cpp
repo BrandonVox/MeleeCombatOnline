@@ -62,6 +62,19 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	);
 	Task_Event_CloseComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowClosed);
 	Task_Event_CloseComboWindow->ReadyForActivation();
+	
+	
+	// Hit Detection
+	UAbilityTask_WaitGameplayEvent* Task_Event_HitDetection = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
+	(
+		this,
+		MCOGameplayTag::Event_HitDetection,
+		nullptr,
+		false,
+		false
+	);
+	Task_Event_HitDetection->EventReceived.AddDynamic(this, &UGA_BasicAttack::HitDetectionRequested);
+	Task_Event_HitDetection->ReadyForActivation();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -94,6 +107,39 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
+}
+
+void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
+{
+	FGameplayTag GivenTag = EventData.EventTag;
+	
+	if (GivenTag.MatchesTagExact(MCOGameplayTag::Event_HitDetection_Begin))
+	{
+		HitDetectionRequested_Begin(EventData);
+	}
+	else if (GivenTag.MatchesTagExact(MCOGameplayTag::Event_HitDetection_End))
+	{
+		HitDetectionRequested_End(EventData);
+	}
+	else if (GivenTag.MatchesTagExact(MCOGameplayTag::Event_HitDetection_Tick))
+	{
+		HitDetectionRequested_Tick(EventData);
+	}
+}
+
+void UGA_BasicAttack::HitDetectionRequested_Begin(FGameplayEventData EventData)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Begin"));
+}
+
+void UGA_BasicAttack::HitDetectionRequested_End(FGameplayEventData EventData)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_End"));
+}
+
+void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Tick"));
 }
 
 void UGA_BasicAttack::InputPressed(float TimeWaited)
