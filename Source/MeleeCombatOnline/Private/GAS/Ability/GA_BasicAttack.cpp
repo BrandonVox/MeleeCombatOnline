@@ -21,7 +21,7 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                       const FGameplayAbilityActivationInfo ActivationInfo,
                                       const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ActivateAbility C++"));
+	// UE_LOG(LogTemp, Warning, TEXT("ActivateAbility C++"));
 
 	// Play Attack Montage
 	UAbilityTask_PlayMontageAndWait* Task_PlayMontage_Attack =
@@ -84,7 +84,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 {
 	if (bIsActive)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
+		// UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
 		SectionName_Next = NAME_None;
 	}
 
@@ -95,7 +95,7 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 {
 	SectionName_Next = EventData.EventTag.GetTagLeafName();
 
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
 
 	// Input Press
 	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
@@ -107,7 +107,7 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 {
 	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
 
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
+	// UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
 
 void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
@@ -130,21 +130,18 @@ void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
 
 void UGA_BasicAttack::HitDetectionRequested_Begin(FGameplayEventData EventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Begin"));
+	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Begin"));
 }
 
 void UGA_BasicAttack::HitDetectionRequested_End(FGameplayEventData EventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_End"));
+	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_End"));
 }
 
 void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Tick"));
-
-
-	// Socket Location
-	// Mesh Comp
+	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Tick"));
+	
 	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
 	
 	if (MeshComp == nullptr)
