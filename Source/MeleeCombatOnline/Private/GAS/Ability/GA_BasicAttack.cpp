@@ -99,7 +99,7 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 
 	// Input Press
 	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
-	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::InputPressed);
+	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::ComboInputPressed);
 	Task_InputPress->ReadyForActivation();
 }
 
@@ -181,7 +181,7 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 	);
 }
 
-void UGA_BasicAttack::InputPressed(float TimeWaited)
+void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
 {
 	UE_LOG(LogTemp, Warning, TEXT("InputPressed"));
 

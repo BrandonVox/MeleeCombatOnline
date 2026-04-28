@@ -46,7 +46,7 @@ private: // Function
 	void HitDetectionRequested_Tick(FGameplayEventData EventData);
 
 	UFUNCTION()
-	void InputPressed(float TimeWaited);
+	void ComboInputPressed(float TimeWaited);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
