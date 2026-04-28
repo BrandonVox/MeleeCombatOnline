@@ -8,9 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Ability/GA_BasicAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Ability/GA_BasicAttack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Ability/GA_BasicAttack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Ability/GA_BasicAttack.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/FirstPerson/Lvl_FirstPerson_Simple/9/1X/WYOC8ZZ6AOHJ8F00VKI92R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/FirstPerson/Lvl_FirstPerson_Simple/9/1X/WYOC8ZZ6AOHJ8F00VKI92R.uasset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

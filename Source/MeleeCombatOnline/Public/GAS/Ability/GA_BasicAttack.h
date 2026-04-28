@@ -44,6 +44,8 @@ private: // Function
 
 	UFUNCTION()
 	void HitDetectionRequested_Tick(FGameplayEventData EventData);
+	
+	void ProcessHitResults(const TArray<FHitResult>& GivenHitResults);
 
 	UFUNCTION()
 	void ComboInputPressed(float TimeWaited);

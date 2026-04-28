@@ -141,14 +141,14 @@ void UGA_BasicAttack::HitDetectionRequested_End(FGameplayEventData EventData)
 void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Tick"));
-	
+
 	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
-	
+
 	if (MeshComp == nullptr)
 	{
 		return;
 	}
-	
+
 	FVector TraceStart = MeshComp->GetSocketLocation(SocketName_Start);
 	FVector TraceEnd = MeshComp->GetSocketLocation(SocketName_End);
 
@@ -158,8 +158,8 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
 	FLinearColor TraceColor_Local = K2_HasAuthority() ? TraceColor_Server : TraceColor;
-	
-	TArray<FHitResult> OutHits;
+
+	TArray<FHitResult> HitResults;
 	UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
 		this,
@@ -170,12 +170,28 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 		false,
 		ActorsToIgnore,
 		DrawDebugType,
-		OutHits,
+		HitResults,
 		false,
 		TraceColor_Local,
 		TraceHitColor,
 		DrawTime
 	);
+
+	ProcessHitResults(HitResults);
+}
+
+void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResults)
+{
+	for (const FHitResult& HitResult : GivenHitResults)
+	{
+		AActor* VictimActor = HitResult.GetActor();
+		if (VictimActor == nullptr)
+		{
+			continue;
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
+	}
 }
 
 void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
