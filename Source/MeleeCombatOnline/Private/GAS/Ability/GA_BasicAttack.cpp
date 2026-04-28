@@ -158,6 +158,8 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
 
+	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
+
 	TArray<FHitResult> OutHits;
 	UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
@@ -168,7 +170,7 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 		TraceObjectTypes,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration,
+		DrawDebugType,
 		OutHits,
 		false,
 		TraceColor,

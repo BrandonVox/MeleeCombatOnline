@@ -68,11 +68,14 @@ private:
 	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	bool bDrawDebugTrace = true;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	float DrawTime = 5.f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceColor = FLinearColor::Red;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceHitColor = FLinearColor::Green;
 };
