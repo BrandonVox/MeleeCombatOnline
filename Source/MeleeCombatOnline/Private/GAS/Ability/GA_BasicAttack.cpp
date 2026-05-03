@@ -157,7 +157,13 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 
 	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
-	FLinearColor TraceColor_Local = K2_HasAuthority() ? TraceColor_Server : TraceColor;
+	FLinearColor TraceColor_Local = TraceColor;
+#if WITH_EDITOR
+	if (K2_HasAuthority())
+	{
+		TraceColor_Local = TraceColor_Server;
+	}
+#endif
 
 	TArray<FHitResult> HitResults;
 	UKismetSystemLibrary::SphereTraceMultiForObjects
