@@ -132,11 +132,15 @@ void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
 void UGA_BasicAttack::HitDetectionRequested_Begin(FGameplayEventData EventData)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Begin"));
+	
+	// Start swing weapon
+	ActorsHitThisSwing.Empty();
 }
 
 void UGA_BasicAttack::HitDetectionRequested_End(FGameplayEventData EventData)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_End"));
+	ActorsHitThisSwing.Empty();
 }
 
 void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
@@ -196,6 +200,11 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 		{
 			continue;
 		}
+		
+		if (ActorsHitThisSwing.Contains(VictimActor))
+		{
+			continue;
+		}
 
 		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
 		// Apply Damage Effect to Victim Actor
@@ -207,6 +216,8 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 			EffectSpecHandle_Damage,
 			AbilityTargetDataHandle_Damage
 		);
+		
+		ActorsHitThisSwing.Add(VictimActor);
 	}
 }
 

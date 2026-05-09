@@ -86,4 +86,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	TSubclassOf<UGameplayEffect> Class_GE_Damage;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> ActorsHitThisSwing;
 };
