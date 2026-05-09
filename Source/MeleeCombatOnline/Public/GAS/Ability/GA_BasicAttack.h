@@ -88,5 +88,5 @@ private:
 	TSubclassOf<UGameplayEffect> Class_GE_Damage;
 	
 	UPROPERTY()
-	TArray<TObjectPtr<AActor>> ActorsHitThisSwing;
+	TArray<TWeakObjectPtr<AActor>> ActorsHitThisSwing;
 };
