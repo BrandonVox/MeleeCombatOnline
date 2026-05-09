@@ -3,6 +3,7 @@
 
 #include "GAS/Ability/GA_BasicAttack.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
@@ -197,6 +198,15 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
+		// Apply Damage Effect to Victim Actor
+		FGameplayEffectSpecHandle EffectSpecHandle_Damage = MakeOutgoingGameplayEffectSpec(Class_GE_Damage);
+		FGameplayAbilityTargetDataHandle AbilityTargetDataHandle_Damage =
+			UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(VictimActor);
+		K2_ApplyGameplayEffectSpecToTarget
+		(
+			EffectSpecHandle_Damage,
+			AbilityTargetDataHandle_Damage
+		);
 	}
 }
 

@@ -10,6 +10,7 @@
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Ability/GA_BasicAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Ability/GA_BasicAttack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Ability/GA_BasicAttack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Ability/GA_BasicAttack.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +36,7 @@
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Editor/UnrealEd/Public/ReferencedAssetsUtils.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/AnimGraphRuntime/Private/AnimNodes/AnimNode_SequenceEvaluator.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Android/AndroidPlatformMisc.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Containers/Array.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/CoreMinimal.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Misc/CoreMiscDefines.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Epic Games/UE_5.7/Engine/Source/Runtime/Core/Public/Serialization/CompactBinary.h" root0="FORCE_HIGHLIGHTING" />
@@ -293,6 +295,7 @@
       <workItem from="1776559892720" duration="2594000" />
       <workItem from="1776660550504" duration="3376000" />
       <workItem from="1777008830517" duration="1431000" />
+      <workItem from="1778291784218" duration="2357000" />
     </task>
     <servers />
   </component>

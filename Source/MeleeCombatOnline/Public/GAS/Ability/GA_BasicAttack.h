@@ -83,4 +83,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceHitColor = FLinearColor::Green;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	TSubclassOf<UGameplayEffect> Class_GE_Damage;
 };
