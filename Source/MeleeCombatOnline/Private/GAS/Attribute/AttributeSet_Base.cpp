@@ -8,9 +8,18 @@
 void UAttributeSet_Base::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
+
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSet_Base, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAttributeSet_Base, MaxHealth, COND_None, REPNOTIFY_Always);
+}
+
+// Only Apply to Current Value
+void UAttributeSet_Base::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
 }
 
 void UAttributeSet_Base::OnRep_Health(const FGameplayAttributeData& OldValue)
