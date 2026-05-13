@@ -162,9 +162,7 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
-
-	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
-
+	
 	FLinearColor TraceColor_Local = TraceColor;
 #if WITH_EDITOR
 	if (K2_HasAuthority())
@@ -173,25 +171,8 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 	}
 #endif
 
-	TArray<FHitResult> HitResults;
-	UKismetSystemLibrary::SphereTraceMultiForObjects
-	(
-		this,
-		TraceStart,
-		TraceEnd,
-		TraceRadius,
-		TraceObjectTypes,
-		false,
-		ActorsToIgnore,
-		DrawDebugType,
-		HitResults,
-		false,
-		TraceColor_Local,
-		TraceHitColor,
-		DrawTime
-	);
-
-	ProcessHitResults(HitResults);
+	///////
+	PerformTraceAndProcessHitResults(TraceStart, TraceEnd, ActorsToIgnore, TraceColor_Local);
 }
 
 void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResults)
@@ -222,6 +203,32 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 
 		ActorsHitThisSwing.Add(VictimActor);
 	}
+}
+
+void UGA_BasicAttack::PerformTraceAndProcessHitResults(FVector TraceStart, FVector TraceEnd,
+	const TArray<AActor*>& ActorsToIgnore, FLinearColor GivenTraceColor)
+{
+	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
+	
+	TArray<FHitResult> HitResults;
+	UKismetSystemLibrary::SphereTraceMultiForObjects
+	(
+		this,
+		TraceStart,
+		TraceEnd,
+		TraceRadius,
+		TraceObjectTypes,
+		false,
+		ActorsToIgnore,
+		DrawDebugType,
+		HitResults,
+		false,
+		GivenTraceColor,
+		TraceHitColor,
+		DrawTime
+	);
+
+	ProcessHitResults(HitResults);
 }
 
 void UGA_BasicAttack::ComboInputPressed(float TimeWaited)

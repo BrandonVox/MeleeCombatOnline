@@ -46,6 +46,14 @@ private: // Function
 	void HitDetectionRequested_Tick(FGameplayEventData EventData);
 	
 	void ProcessHitResults(const TArray<FHitResult>& GivenHitResults);
+	
+	void PerformTraceAndProcessHitResults
+	(
+		FVector TraceStart,	
+		FVector TraceEnd,
+		const TArray<AActor*>& ActorsToIgnore,
+		FLinearColor GivenTraceColor
+	);
 
 	UFUNCTION()
 	void ComboInputPressed(float TimeWaited);
