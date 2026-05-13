@@ -65,18 +65,21 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_Event_CloseComboWindow->EventReceived.AddDynamic(this, &UGA_BasicAttack::ComboWindowClosed);
 	Task_Event_CloseComboWindow->ReadyForActivation();
 
-
-	// Hit Detection
-	UAbilityTask_WaitGameplayEvent* Task_Event_HitDetection = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
-	(
-		this,
-		MCOGameplayTag::Event_HitDetection,
-		nullptr,
-		false,
-		false
-	);
-	Task_Event_HitDetection->EventReceived.AddDynamic(this, &UGA_BasicAttack::HitDetectionRequested);
-	Task_Event_HitDetection->ReadyForActivation();
+	// Only Listen for Hit Detection event on server
+	if (K2_HasAuthority())
+	{
+		// Hit Detection
+		UAbilityTask_WaitGameplayEvent* Task_Event_HitDetection = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
+		(
+			this,
+			MCOGameplayTag::Event_HitDetection,
+			nullptr,
+			false,
+			false
+		);
+		Task_Event_HitDetection->EventReceived.AddDynamic(this, &UGA_BasicAttack::HitDetectionRequested);
+		Task_Event_HitDetection->ReadyForActivation();
+	}
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -132,7 +135,7 @@ void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
 void UGA_BasicAttack::HitDetectionRequested_Begin(FGameplayEventData EventData)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("HitDetectionRequested_Begin"));
-	
+
 	// Start swing weapon
 	ActorsHitThisSwing.Empty();
 }
@@ -200,7 +203,7 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 		{
 			continue;
 		}
-		
+
 		if (ActorsHitThisSwing.Contains(VictimActor))
 		{
 			continue;
@@ -216,7 +219,7 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 			EffectSpecHandle_Damage,
 			AbilityTargetDataHandle_Damage
 		);
-		
+
 		ActorsHitThisSwing.Add(VictimActor);
 	}
 }
