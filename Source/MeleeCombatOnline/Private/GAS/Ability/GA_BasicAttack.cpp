@@ -138,6 +138,13 @@ void UGA_BasicAttack::HitDetectionRequested_Begin(FGameplayEventData EventData)
 
 	// Start swing weapon
 	ActorsHitThisSwing.Empty();
+
+	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
+	if (MeshComp)
+	{
+		PrevTraceStart = MeshComp->GetSocketLocation(SocketName_Start);
+		PrevTraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+	}
 }
 
 void UGA_BasicAttack::HitDetectionRequested_End(FGameplayEventData EventData)
@@ -157,12 +164,12 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 		return;
 	}
 
-	FVector TraceStart = MeshComp->GetSocketLocation(SocketName_Start);
-	FVector TraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+	FVector CurrentTraceStart = MeshComp->GetSocketLocation(SocketName_Start);
+	FVector CurrentTraceEnd = MeshComp->GetSocketLocation(SocketName_End);
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
-	
+
 	FLinearColor TraceColor_Local = TraceColor;
 #if WITH_EDITOR
 	if (K2_HasAuthority())
@@ -171,8 +178,11 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 	}
 #endif
 
-	///////
-	PerformTraceAndProcessHitResults(TraceStart, TraceEnd, ActorsToIgnore, TraceColor_Local);
+	// Perform trace for current frame
+	PerformTraceAndProcessHitResults(CurrentTraceStart, CurrentTraceEnd, ActorsToIgnore, TraceColor_Local);
+	FillTraceGap(CurrentTraceStart, CurrentTraceEnd, ActorsToIgnore);
+	PrevTraceStart = CurrentTraceStart;
+	PrevTraceEnd = CurrentTraceEnd;
 }
 
 void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResults)
@@ -206,10 +216,11 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 }
 
 void UGA_BasicAttack::PerformTraceAndProcessHitResults(FVector TraceStart, FVector TraceEnd,
-	const TArray<AActor*>& ActorsToIgnore, FLinearColor GivenTraceColor)
+                                                       const TArray<AActor*>& ActorsToIgnore,
+                                                       FLinearColor GivenTraceColor)
 {
 	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
-	
+
 	TArray<FHitResult> HitResults;
 	UKismetSystemLibrary::SphereTraceMultiForObjects
 	(
@@ -229,6 +240,16 @@ void UGA_BasicAttack::PerformTraceAndProcessHitResults(FVector TraceStart, FVect
 	);
 
 	ProcessHitResults(HitResults);
+}
+
+void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTraceEnd,
+	const TArray<AActor*>& ActorsToIgnore)
+{
+	float TwoEndDistance = FVector::Distance(PrevTraceEnd, CurrentTraceEnd);
+	float FillStep = TraceRadius * 1.3f;
+	
+	int32 FillCount = FMath::TruncToInt32(TwoEndDistance / FillStep);
+	UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
 }
 
 void UGA_BasicAttack::ComboInputPressed(float TimeWaited)

@@ -44,15 +44,22 @@ private: // Function
 
 	UFUNCTION()
 	void HitDetectionRequested_Tick(FGameplayEventData EventData);
-	
+
 	void ProcessHitResults(const TArray<FHitResult>& GivenHitResults);
-	
+
 	void PerformTraceAndProcessHitResults
 	(
-		FVector TraceStart,	
+		FVector TraceStart,
 		FVector TraceEnd,
 		const TArray<AActor*>& ActorsToIgnore,
 		FLinearColor GivenTraceColor
+	);
+
+	void FillTraceGap
+	(
+		FVector CurrentTraceStart,
+		FVector CurrentTraceEnd,
+		const TArray<AActor*>& ActorsToIgnore
 	);
 
 	UFUNCTION()
@@ -76,25 +83,28 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	bool bDrawDebugTrace = true;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	float DrawTime = 5.f;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceColor = FLinearColor::Red;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceColor_Server = FLinearColor::Blue;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceHitColor = FLinearColor::Green;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	TSubclassOf<UGameplayEffect> Class_GE_Damage;
-	
+
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AActor>> ActorsHitThisSwing;
+
+	FVector PrevTraceStart;
+	FVector PrevTraceEnd;
 };
