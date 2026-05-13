@@ -9,8 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0ceb536c-69f4-424a-b400-543daaea41b3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MeleeCombatOnline.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MeleeCombatOnline/GAS/BP_GA_BasicAttack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MeleeCombatOnline/GAS/BP_GA_BasicAttack.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/MeleeCombatOnline/GAS/Effect/GE_Damage_BasicAttack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/MeleeCombatOnline/GAS/Effect/GE_Damage_BasicAttack.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Attribute/AttributeSet_Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Private/GAS/Attribute/AttributeSet_Base.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Attribute/AttributeSet_Base.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MeleeCombatOnline/Public/GAS/Attribute/AttributeSet_Base.h" afterDir="false" />
     </list>

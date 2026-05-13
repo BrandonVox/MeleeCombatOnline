@@ -3,6 +3,7 @@
 
 #include "GAS/Attribute/AttributeSet_Base.h"
 
+#include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
 void UAttributeSet_Base::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -19,6 +20,14 @@ void UAttributeSet_Base::PreAttributeChange(const FGameplayAttribute& Attribute,
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
+}
+
+void UAttributeSet_Base::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
+{
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
 }
 
