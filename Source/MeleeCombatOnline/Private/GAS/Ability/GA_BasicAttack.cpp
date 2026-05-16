@@ -266,12 +266,17 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 	FVector FillDirection_Start = (CurrentTraceStart - PrevTraceStart).GetSafeNormal();
 
 
+	float CorrectCapsuleLength = FVector::Distance(CurrentTraceStart, CurrentTraceEnd);
+	
 	// Loop
 	for (int32 i = 1; i <= FillCount; ++i)
 	{
 		FVector FillTraceEnd = PrevTraceEnd + (FillStep_End * FillDirection_End * i);
-
 		FVector FillTraceStart = PrevTraceStart + (FillStep_Start * FillDirection_Start * i);
+		
+		FVector CapsuleDirection = (FillTraceEnd - FillTraceStart).GetSafeNormal();
+		
+		FillTraceEnd = FillTraceStart + (CapsuleDirection * CorrectCapsuleLength);
 		PerformTraceAndProcessHitResults(FillTraceStart, FillTraceEnd, ActorsToIgnore, TraceColor_FillGap);
 	}
 }
