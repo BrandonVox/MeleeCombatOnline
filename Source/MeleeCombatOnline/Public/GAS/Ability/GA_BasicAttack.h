@@ -104,6 +104,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	TSubclassOf<UGameplayEffect> Class_GE_Damage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	int32 MaxFillCount = 25;
 
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AActor>> ActorsHitThisSwing;

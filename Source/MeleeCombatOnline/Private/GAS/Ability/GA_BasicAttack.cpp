@@ -269,6 +269,7 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 	float CorrectCapsuleLength = FVector::Distance(CurrentTraceStart, CurrentTraceEnd);
 	
 	// Loop
+	FillCount = FMath::Clamp(FillCount, 0, MaxFillCount);
 	for (int32 i = 1; i <= FillCount; ++i)
 	{
 		FVector FillTraceEnd = PrevTraceEnd + (FillStep_End * FillDirection_End * i);
