@@ -245,23 +245,33 @@ void UGA_BasicAttack::PerformTraceAndProcessHitResults(FVector TraceStart, FVect
 void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTraceEnd,
                                    const TArray<AActor*>& ActorsToIgnore)
 {
+	// Fill End
 	float TwoEndDistance = FVector::Distance(PrevTraceEnd, CurrentTraceEnd);
-	float FillStep = TraceRadius * 1.3f;
+	float FillStep_End = TraceRadius * 1.3f;
 
-	int32 FillCount = FMath::TruncToInt32(TwoEndDistance / FillStep);
+	int32 FillCount = FMath::TruncToInt32(TwoEndDistance / FillStep_End);
+	if (FillCount == 0)
+	{
+		return;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
 
-	// PrevEnd -> CurrentEnd
-	// A -> B 
-	// B - A
 	FVector FillDirection_End = (CurrentTraceEnd - PrevTraceEnd).GetSafeNormal();
-	// fillcount = 4
-	// 0 1 2 3
-	// 1 2 3 4
+
+
+	// Fill Start
+
+	float TwoStartDistance = FVector::Distance(PrevTraceStart, CurrentTraceStart);
+	float FillStep_Start = TwoStartDistance / (FillCount + 1);
+	FVector FillDirection_Start = (CurrentTraceStart - PrevTraceStart).GetSafeNormal();
+
+
+	// Loop
 	for (int32 i = 1; i <= FillCount; ++i)
 	{
-		FVector FillTraceEnd = PrevTraceEnd + (FillStep * FillDirection_End * i);
-		FVector FillTraceStart = PrevTraceStart;
+		FVector FillTraceEnd = PrevTraceEnd + (FillStep_End * FillDirection_End * i);
+
+		FVector FillTraceStart = PrevTraceStart + (FillStep_Start * FillDirection_Start * i);
 		PerformTraceAndProcessHitResults(FillTraceStart, FillTraceEnd, ActorsToIgnore, TraceColor_FillGap);
 	}
 }
