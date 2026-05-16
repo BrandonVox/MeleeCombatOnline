@@ -95,6 +95,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceColor_Server = FLinearColor::Blue;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
+	FLinearColor TraceColor_FillGap = FLinearColor::Yellow;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceHitColor = FLinearColor::Green;

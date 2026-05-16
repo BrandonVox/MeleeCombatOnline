@@ -243,13 +243,27 @@ void UGA_BasicAttack::PerformTraceAndProcessHitResults(FVector TraceStart, FVect
 }
 
 void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTraceEnd,
-	const TArray<AActor*>& ActorsToIgnore)
+                                   const TArray<AActor*>& ActorsToIgnore)
 {
 	float TwoEndDistance = FVector::Distance(PrevTraceEnd, CurrentTraceEnd);
 	float FillStep = TraceRadius * 1.3f;
-	
+
 	int32 FillCount = FMath::TruncToInt32(TwoEndDistance / FillStep);
 	UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
+
+	// PrevEnd -> CurrentEnd
+	// A -> B 
+	// B - A
+	FVector FillDirection_End = (CurrentTraceEnd - PrevTraceEnd).GetSafeNormal();
+	// fillcount = 4
+	// 0 1 2 3
+	// 1 2 3 4
+	for (int32 i = 1; i <= FillCount; ++i)
+	{
+		FVector FillTraceEnd = PrevTraceEnd + (FillStep * FillDirection_End * i);
+		FVector FillTraceStart = PrevTraceStart;
+		PerformTraceAndProcessHitResults(FillTraceStart, FillTraceEnd, ActorsToIgnore, TraceColor_FillGap);
+	}
 }
 
 void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
