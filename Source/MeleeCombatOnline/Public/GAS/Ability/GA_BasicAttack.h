@@ -107,6 +107,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	int32 MaxFillCount = 25;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
+	TObjectPtr<UParticleSystem> VisualFX_Hit_Impact;
 
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AActor>> ActorsHitThisSwing;

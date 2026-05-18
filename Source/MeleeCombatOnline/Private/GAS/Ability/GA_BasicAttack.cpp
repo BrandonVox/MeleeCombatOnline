@@ -8,6 +8,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 #include "GAS/MCOGameplayTag.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UGA_BasicAttack::UGA_BasicAttack()
@@ -211,6 +212,14 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 			AbilityTargetDataHandle_Damage
 		);
 
+		// Spawn VFX Hit Impact
+		UGameplayStatics::SpawnEmitterAtLocation
+		(
+			this,
+			VisualFX_Hit_Impact,
+			HitResult.ImpactPoint
+		);
+
 		ActorsHitThisSwing.Add(VictimActor);
 	}
 }
@@ -267,16 +276,16 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 
 
 	float CorrectCapsuleLength = FVector::Distance(CurrentTraceStart, CurrentTraceEnd);
-	
+
 	// Loop
 	FillCount = FMath::Clamp(FillCount, 0, MaxFillCount);
 	for (int32 i = 1; i <= FillCount; ++i)
 	{
 		FVector FillTraceEnd = PrevTraceEnd + (FillStep_End * FillDirection_End * i);
 		FVector FillTraceStart = PrevTraceStart + (FillStep_Start * FillDirection_Start * i);
-		
+
 		FVector CapsuleDirection = (FillTraceEnd - FillTraceStart).GetSafeNormal();
-		
+
 		FillTraceEnd = FillTraceStart + (CapsuleDirection * CorrectCapsuleLength);
 		PerformTraceAndProcessHitResults(FillTraceStart, FillTraceEnd, ActorsToIgnore, TraceColor_FillGap);
 	}
