@@ -203,6 +203,13 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
 		// Apply Damage Effect to Victim Actor
 		FGameplayEffectSpecHandle EffectSpecHandle_Damage = MakeOutgoingGameplayEffectSpec(Class_GE_Damage);
+
+		FGameplayEffectContextHandle EffectContextHandle_Damage =
+			MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
+		EffectContextHandle_Damage.AddHitResult(HitResult);
+		EffectSpecHandle_Damage.Data->SetContext(EffectContextHandle_Damage);
+
+
 		FGameplayAbilityTargetDataHandle AbilityTargetDataHandle_Damage =
 			UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(VictimActor);
 		K2_ApplyGameplayEffectSpecToTarget
@@ -210,13 +217,13 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 			EffectSpecHandle_Damage,
 			AbilityTargetDataHandle_Damage
 		);
-		
+
 		// Apply Gameplay Effect to Victim Actor
 		// Reduce Health
 		// Trigger Gameplay Cue Tag: GameplayCue.Hit.Impact
 		// Trigger Gameplay Cue Notify
 		// Gameplay Cue Notify: Spawn VFX
-		
+
 		// Gameplay Cue
 
 		// Spawn VFX Hit Impact
