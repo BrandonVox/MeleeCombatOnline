@@ -8,7 +8,6 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 #include "GAS/MCOGameplayTag.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UGA_BasicAttack::UGA_BasicAttack()
@@ -211,14 +210,22 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 			EffectSpecHandle_Damage,
 			AbilityTargetDataHandle_Damage
 		);
+		
+		// Apply Gameplay Effect to Victim Actor
+		// Reduce Health
+		// Trigger Gameplay Cue Tag: GameplayCue.Hit.Impact
+		// Trigger Gameplay Cue Notify
+		// Gameplay Cue Notify: Spawn VFX
+		
+		// Gameplay Cue
 
 		// Spawn VFX Hit Impact
-		UGameplayStatics::SpawnEmitterAtLocation
-		(
-			this,
-			VisualFX_Hit_Impact,
-			HitResult.ImpactPoint
-		);
+		// UGameplayStatics::SpawnEmitterAtLocation
+		// (
+		// 	this,
+		// 	VisualFX_Hit_Impact,
+		// 	HitResult.ImpactPoint
+		// );
 
 		ActorsHitThisSwing.Add(VictimActor);
 	}

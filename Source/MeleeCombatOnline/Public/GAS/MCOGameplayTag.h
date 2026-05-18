@@ -20,5 +20,7 @@ namespace MCOGameplayTag
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_Begin);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_End);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_Tick);
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_BasicAttack_Hit_Impact_Aurora);
 }
 

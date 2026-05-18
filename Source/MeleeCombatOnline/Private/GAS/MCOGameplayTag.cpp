@@ -20,4 +20,8 @@ namespace MCOGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Event_HitDetection_Begin, TEXT("Event.HitDetection.Begin"));
 	UE_DEFINE_GAMEPLAY_TAG(Event_HitDetection_End, TEXT("Event.HitDetection.End"));
 	UE_DEFINE_GAMEPLAY_TAG(Event_HitDetection_Tick, TEXT("Event.HitDetection.Tick"));
+	
+	
+	UE_DEFINE_GAMEPLAY_TAG(GameplayCue_BasicAttack_Hit_Impact_Aurora, TEXT("GameplayCue.BasicAttack.Hit.Impact.Aurora"));
+	
 }
