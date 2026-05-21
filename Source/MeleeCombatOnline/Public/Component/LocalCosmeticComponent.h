@@ -7,6 +7,8 @@
 #include "LocalCosmeticComponent.generated.h"
 
 
+struct FGameplayEventData;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MELEECOMBATONLINE_API ULocalCosmeticComponent : public UActorComponent
 {
@@ -19,4 +21,11 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+private: // Function
+	
+	void HandleHitDetection_Begin(const FGameplayEventData* EventData);
+	void HandleHitDetection_End(const FGameplayEventData* EventData);
+	void HandleHitDetection_Tick(const FGameplayEventData* EventData);
+	
 };
