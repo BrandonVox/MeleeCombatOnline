@@ -225,6 +225,7 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 		// Gameplay Cue Notify: Spawn VFX
 
 		// Gameplay Cue
+		// 100 -> 200 ping?
 
 		// Spawn VFX Hit Impact
 		// UGameplayStatics::SpawnEmitterAtLocation

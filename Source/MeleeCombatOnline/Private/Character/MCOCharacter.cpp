@@ -3,6 +3,7 @@
 
 #include "Character/MCOCharacter.h"
 
+#include "Component/LocalCosmeticComponent.h"
 #include "Component/WidgetComponent_Overhead.h"
 #include "Components/CapsuleComponent.h"
 #include "GAS/Attribute/AttributeSet_Base.h"
@@ -37,6 +38,9 @@ AMCOCharacter::AMCOCharacter()
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	// Local Cosmetic Component
+	LocalCosmeticComponent = CreateDefaultSubobject<ULocalCosmeticComponent>(TEXT("LocalCosmeticComponent"));
 
 }
 
