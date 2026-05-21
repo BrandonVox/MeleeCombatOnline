@@ -76,3 +76,6 @@ DerivedDataCache/*
 
 # Paragon Characters
 Content/ParagonAurora/*
+
+# Idea
+.idea/*
