@@ -26,6 +26,15 @@ ULocalCosmeticComponent::ULocalCosmeticComponent()
 void ULocalCosmeticComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// dedicated server does not render game 
+	// skip cosmetic fx
+	// net mode
+	if (IsNetMode(NM_DedicatedServer))
+	{
+		return;
+	}
+	
 
 	IAbilitySystemInterface* OwnerASI = GetOwner<IAbilitySystemInterface>();
 
