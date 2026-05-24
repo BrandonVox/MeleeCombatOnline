@@ -4,7 +4,9 @@
 #include "Component/LocalCosmeticComponent.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayCueManager.h"
 #include "Data/DataAsset_Trace.h"
 #include "GAS/MCOGameplayTag.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -111,14 +113,27 @@ void ULocalCosmeticComponent::ProcessHitResults(const TArray<FHitResult>& GivenH
 
 		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
 		// Play Local Gameplay Cue
+		UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
+		FGameplayCueParameters GameplayCueParam_Impact;
+		GameplayCueParam_Impact.Location = HitResult.ImpactPoint;
+		if (GCM)
+		{
+			GCM->HandleGameplayCue
+			(
+				VictimActor,
+				MCOGameplayTag::GameplayCue_BasicAttack_Hit_Impact_Aurora,
+				EGameplayCueEvent::Executed,
+				GameplayCueParam_Impact
+			);
+		}
 
 		ActorsHitThisSwing.Add(VictimActor);
 	}
 }
 
 void ULocalCosmeticComponent::PerformTraceAndProcessHitResults(FVector TraceStart, FVector TraceEnd,
-                                                       const TArray<AActor*>& ActorsToIgnore,
-                                                       FLinearColor GivenTraceColor)
+                                                               const TArray<AActor*>& ActorsToIgnore,
+                                                               FLinearColor GivenTraceColor)
 {
 	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
@@ -144,7 +159,7 @@ void ULocalCosmeticComponent::PerformTraceAndProcessHitResults(FVector TraceStar
 }
 
 void ULocalCosmeticComponent::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTraceEnd,
-                                   const TArray<AActor*>& ActorsToIgnore)
+                                           const TArray<AActor*>& ActorsToIgnore)
 {
 	// Fill End
 	float TwoEndDistance = FVector::Distance(PrevTraceEnd, CurrentTraceEnd);
