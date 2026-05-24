@@ -7,6 +7,7 @@
 #include "LocalCosmeticComponent.generated.h"
 
 
+class UDataAsset_Trace;
 struct FGameplayEventData;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -57,16 +58,7 @@ private: // Property
 	FVector PrevTraceEnd;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	FName SocketName_Start = FName(TEXT("Sword_Base"));
-
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	FName SocketName_End = FName(TEXT("Sword_Tip"));
-	
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	float TraceRadius = 20.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
+	TObjectPtr<UDataAsset_Trace> TraceData;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	bool bDrawDebugTrace = true;
@@ -82,8 +74,5 @@ private: // Property
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection", meta = (EditCondition = "bDrawDebugTrace"))
 	FLinearColor TraceHitColor = FLinearColor::Green;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	int32 MaxFillCount = 25;
 	
 };

@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
+#include "Data/DataAsset_Trace.h"
 #include "GAS/MCOGameplayTag.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -57,8 +58,8 @@ void ULocalCosmeticComponent::HandleHitDetection_Begin(const FGameplayEventData*
 	USkeletalMeshComponent* MeshComp = GetOwnerMeshComponent();
 	if (MeshComp)
 	{
-		PrevTraceStart = MeshComp->GetSocketLocation(SocketName_Start);
-		PrevTraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+		PrevTraceStart = MeshComp->GetSocketLocation(TraceData->SocketName_Start);
+		PrevTraceEnd = MeshComp->GetSocketLocation(TraceData->SocketName_End);
 	}
 }
 
@@ -78,8 +79,8 @@ void ULocalCosmeticComponent::HandleHitDetection_Tick(const FGameplayEventData* 
 		return;
 	}
 
-	FVector CurrentTraceStart = MeshComp->GetSocketLocation(SocketName_Start);
-	FVector CurrentTraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+	FVector CurrentTraceStart = MeshComp->GetSocketLocation(TraceData->SocketName_Start);
+	FVector CurrentTraceEnd = MeshComp->GetSocketLocation(TraceData->SocketName_End);
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetOwner());
@@ -127,8 +128,8 @@ void ULocalCosmeticComponent::PerformTraceAndProcessHitResults(FVector TraceStar
 		this,
 		TraceStart,
 		TraceEnd,
-		TraceRadius,
-		TraceObjectTypes,
+		TraceData->TraceRadius,
+		TraceData->TraceObjectTypes,
 		false,
 		ActorsToIgnore,
 		DrawDebugType,
@@ -147,7 +148,7 @@ void ULocalCosmeticComponent::FillTraceGap(FVector CurrentTraceStart, FVector Cu
 {
 	// Fill End
 	float TwoEndDistance = FVector::Distance(PrevTraceEnd, CurrentTraceEnd);
-	float FillStep_End = TraceRadius * 1.3f;
+	float FillStep_End = TraceData->TraceRadius * 1.3f;
 
 	int32 FillCount = FMath::TruncToInt32(TwoEndDistance / FillStep_End);
 	if (FillCount == 0)
@@ -169,7 +170,7 @@ void ULocalCosmeticComponent::FillTraceGap(FVector CurrentTraceStart, FVector Cu
 	float CorrectCapsuleLength = FVector::Distance(CurrentTraceStart, CurrentTraceEnd);
 
 	// Loop
-	FillCount = FMath::Clamp(FillCount, 0, MaxFillCount);
+	FillCount = FMath::Clamp(FillCount, 0, TraceData->MaxFillCount);
 	for (int32 i = 1; i <= FillCount; ++i)
 	{
 		FVector FillTraceEnd = PrevTraceEnd + (FillStep_End * FillDirection_End * i);

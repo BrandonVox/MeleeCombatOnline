@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "GA_BasicAttack.generated.h"
 
+class UDataAsset_Trace;
 /**
  * 
  */
@@ -65,24 +66,14 @@ private: // Function
 	UFUNCTION()
 	void ComboInputPressed(float TimeWaited);
 
-private:
+private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
 	FName SectionName_Next = NAME_None;
-
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	FName SocketName_Start = FName(TEXT("Sword_Base"));
-
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	FName SocketName_End = FName(TEXT("Sword_Tip"));
-
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	float TraceRadius = 20.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
+	TObjectPtr<UDataAsset_Trace> TraceData;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	bool bDrawDebugTrace = true;
@@ -104,9 +95,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	TSubclassOf<UGameplayEffect> Class_GE_Damage;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
-	int32 MaxFillCount = 25;
 
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AActor>> ActorsHitThisSwing;

@@ -7,6 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
+#include "Data/DataAsset_Trace.h"
 #include "GAS/MCOGameplayTag.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -142,8 +143,8 @@ void UGA_BasicAttack::HitDetectionRequested_Begin(FGameplayEventData EventData)
 	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
 	if (MeshComp)
 	{
-		PrevTraceStart = MeshComp->GetSocketLocation(SocketName_Start);
-		PrevTraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+		PrevTraceStart = MeshComp->GetSocketLocation(TraceData->SocketName_Start);
+		PrevTraceEnd = MeshComp->GetSocketLocation(TraceData->SocketName_End);
 	}
 }
 
@@ -164,8 +165,8 @@ void UGA_BasicAttack::HitDetectionRequested_Tick(FGameplayEventData EventData)
 		return;
 	}
 
-	FVector CurrentTraceStart = MeshComp->GetSocketLocation(SocketName_Start);
-	FVector CurrentTraceEnd = MeshComp->GetSocketLocation(SocketName_End);
+	FVector CurrentTraceStart = MeshComp->GetSocketLocation(TraceData->SocketName_Start);
+	FVector CurrentTraceEnd = MeshComp->GetSocketLocation(TraceData->SocketName_End);
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
@@ -251,8 +252,8 @@ void UGA_BasicAttack::PerformTraceAndProcessHitResults(FVector TraceStart, FVect
 		this,
 		TraceStart,
 		TraceEnd,
-		TraceRadius,
-		TraceObjectTypes,
+		TraceData->TraceRadius,
+		TraceData->TraceObjectTypes,
 		false,
 		ActorsToIgnore,
 		DrawDebugType,
@@ -271,7 +272,7 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 {
 	// Fill End
 	float TwoEndDistance = FVector::Distance(PrevTraceEnd, CurrentTraceEnd);
-	float FillStep_End = TraceRadius * 1.3f;
+	float FillStep_End = TraceData->TraceRadius * 1.3f;
 
 	int32 FillCount = FMath::TruncToInt32(TwoEndDistance / FillStep_End);
 	if (FillCount == 0)
@@ -293,7 +294,7 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 	float CorrectCapsuleLength = FVector::Distance(CurrentTraceStart, CurrentTraceEnd);
 
 	// Loop
-	FillCount = FMath::Clamp(FillCount, 0, MaxFillCount);
+	FillCount = FMath::Clamp(FillCount, 0, TraceData->MaxFillCount);
 	for (int32 i = 1; i <= FillCount; ++i)
 	{
 		FVector FillTraceEnd = PrevTraceEnd + (FillStep_End * FillDirection_End * i);
