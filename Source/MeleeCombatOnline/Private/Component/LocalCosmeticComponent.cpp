@@ -7,6 +7,8 @@
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayCueManager.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Data/DataAsset_Trace.h"
 #include "GAS/MCOGameplayTag.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -67,6 +69,7 @@ void ULocalCosmeticComponent::HandleHitDetection_Begin(const FGameplayEventData*
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ Begin"));
 	PlaySound_WeaponSwing();
+	SpawnWeaponTrailFX();
 	ActorsHitThisSwing.Empty();
 
 	USkeletalMeshComponent* MeshComp = GetOwnerMeshComponent();
@@ -147,6 +150,7 @@ void ULocalCosmeticComponent::PerformTraceAndProcessHitResults(FVector TraceStar
                                                                const TArray<AActor*>& ActorsToIgnore,
                                                                FLinearColor GivenTraceColor)
 {
+	UpdateWeaponTrailFX(TraceStart, TraceEnd);
 	const EDrawDebugTrace::Type DrawDebugType = bDrawDebugTrace ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
 	TArray<FHitResult> HitResults;
@@ -256,4 +260,25 @@ FVector ULocalCosmeticComponent::GetLocation_Weapon_Middle() const
 	FVector Location_Weapon_End = MeshComp->GetSocketLocation(TraceData->SocketName_End);
 	
 	return (Location_Weapon_Start + Location_Weapon_End ) * 0.5f;
+}
+
+void ULocalCosmeticComponent::SpawnWeaponTrailFX()
+{
+	FFXSystemSpawnParameters SpawnParams;
+	SpawnParams.SystemTemplate = FXSystem_WeaponTrail;
+	SpawnParams.AttachToComponent = GetOwnerMeshComponent();
+	SpawnParams.AttachPointName = Name_Socket_Root;
+	SpawnParams.LocationType = EAttachLocation::KeepRelativeOffset;
+
+	NiagaraComponent_WeaponTrail =   UNiagaraFunctionLibrary::SpawnSystemAttachedWithParams(SpawnParams);
+}
+
+void ULocalCosmeticComponent::UpdateWeaponTrailFX(FVector NewLocation_Start, FVector NewLocation_End)
+{
+	if (NiagaraComponent_WeaponTrail)
+	{
+		NiagaraComponent_WeaponTrail->SetVectorParameter(FName(TEXT("Location_Weapon_Start")), NewLocation_Start);
+		NiagaraComponent_WeaponTrail->SetVectorParameter(FName(TEXT("Location_Weapon_End")), NewLocation_End);
+	}
+
 }
