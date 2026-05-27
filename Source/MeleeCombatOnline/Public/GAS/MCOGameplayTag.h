@@ -22,5 +22,7 @@ namespace MCOGameplayTag
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_HitDetection_Tick);
 	
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_BasicAttack_Hit_Impact_Aurora);
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Sound_Swing_Sword);
 }
 

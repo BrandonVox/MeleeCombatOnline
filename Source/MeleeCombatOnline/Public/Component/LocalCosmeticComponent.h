@@ -47,6 +47,9 @@ private: // Function
 	
 	USkeletalMeshComponent* GetOwnerMeshComponent();
 	
+	void PlaySound_WeaponSwing();
+	FVector GetLocation_Weapon_Middle() const;
+	
 private: // Property
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AActor>> ActorsHitThisSwing;

@@ -35,6 +35,8 @@ void ULocalCosmeticComponent::BeginPlay()
 		return;
 	}
 	
+	GetOwnerMeshComponent();
+	
 
 	IAbilitySystemInterface* OwnerASI = GetOwner<IAbilitySystemInterface>();
 
@@ -64,6 +66,7 @@ void ULocalCosmeticComponent::BeginPlay()
 void ULocalCosmeticComponent::HandleHitDetection_Begin(const FGameplayEventData* EventData)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ Begin"));
+	PlaySound_WeaponSwing();
 	ActorsHitThisSwing.Empty();
 
 	USkeletalMeshComponent* MeshComp = GetOwnerMeshComponent();
@@ -219,4 +222,38 @@ USkeletalMeshComponent* ULocalCosmeticComponent::GetOwnerMeshComponent()
 		}
 	}
 	return OwnerMeshComponent_RawPtr;
+}
+
+void ULocalCosmeticComponent::PlaySound_WeaponSwing()
+{
+	// execute local gameplay cue for play sound
+	// Play Local Gameplay Cue
+	UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
+	FGameplayCueParameters CueParams;
+	CueParams.Location = GetLocation_Weapon_Middle();
+	if (GCM)
+	{
+		GCM->HandleGameplayCue
+		(
+			GetOwner(),
+			MCOGameplayTag::GameplayCue_Sound_Swing_Sword,
+			EGameplayCueEvent::Executed,
+			CueParams
+		);
+	}
+}
+
+FVector ULocalCosmeticComponent::GetLocation_Weapon_Middle() const
+{
+	USkeletalMeshComponent* MeshComp = OwnerMeshComponent.Get();
+
+	if (MeshComp == nullptr)
+	{
+		return FVector::ZeroVector;
+	}
+
+	FVector Location_Weapon_Start = MeshComp->GetSocketLocation(TraceData->SocketName_Start);
+	FVector Location_Weapon_End = MeshComp->GetSocketLocation(TraceData->SocketName_End);
+	
+	return (Location_Weapon_Start + Location_Weapon_End ) * 0.5f;
 }
