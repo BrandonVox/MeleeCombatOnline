@@ -64,13 +64,17 @@ private: // Function
 	);
 
 	UFUNCTION()
-	void ComboInputPressed(float TimeWaited);
+	void HandleInput_Press(float TimeWaited);
+	
+	void JumpToNextSectionImmediately();
+	
+	void SetupWaitInput_Press(bool bAlreadyPressed);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
-	FName SectionName_Next = NAME_None;
+	FName Name_Section_Next = NAME_None;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings | Hit Detection")
 	TObjectPtr<UDataAsset_Trace> TraceData;

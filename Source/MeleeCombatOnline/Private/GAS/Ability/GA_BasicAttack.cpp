@@ -81,6 +81,8 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		Task_Event_HitDetection->EventReceived.AddDynamic(this, &UGA_BasicAttack::HitDetectionRequested);
 		Task_Event_HitDetection->ReadyForActivation();
 	}
+
+	SetupWaitInput_Press(true);
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -90,7 +92,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	if (bIsActive)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("End Ability"));
-		SectionName_Next = NAME_None;
+		Name_Section_Next = NAME_None;
 	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -98,29 +100,40 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 {
-	SectionName_Next = EventData.EventTag.GetTagLeafName();
+	Name_Section_Next = EventData.EventTag.GetTagLeafName();
 
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
-
-	// Input Press
-	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
-	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::ComboInputPressed);
-	Task_InputPress->ReadyForActivation();
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *Name_Section_Next.ToString());
 }
 
 void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 {
-	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
+	Name_Section_Next = NAME_None;
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
 
-void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
+void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 {
-	UE_LOG(LogTemp, Warning, TEXT("InputPressed"));
+	SetupWaitInput_Press(false);
+	
+	UE_LOG(LogTemp, Warning, TEXT("HandleInput_Press"));
 
+	// we only jump to next section
+	// only when we are in combo window
+	// by checking the next section name
+	// 1. the name of the next section
+	// 2. if we're in combo window
+	if (Name_Section_Next != NAME_None)
+	{
+		JumpToNextSectionImmediately();
+		Name_Section_Next = NAME_None;
+	}
+}
+
+void UGA_BasicAttack::JumpToNextSectionImmediately()
+{
 	// Jump to Section
-	if (SectionName_Next == NAME_None)
+	if (Name_Section_Next == NAME_None)
 	{
 		return;
 	}
@@ -136,8 +149,16 @@ void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
 		return;
 	}
 
-	MyAnimInstance->Montage_JumpToSection(SectionName_Next, AttackMontage);
-	SectionName_Next = NAME_None;
+	MyAnimInstance->Montage_JumpToSection(Name_Section_Next, AttackMontage);
+}
+
+void UGA_BasicAttack::SetupWaitInput_Press(bool bAlreadyPressed)
+{
+	// Input Press
+	UAbilityTask_WaitInputPress* Task_InputPress =
+		UAbilityTask_WaitInputPress::WaitInputPress(this, bAlreadyPressed);
+	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::HandleInput_Press);
+	Task_InputPress->ReadyForActivation();
 }
 
 void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
