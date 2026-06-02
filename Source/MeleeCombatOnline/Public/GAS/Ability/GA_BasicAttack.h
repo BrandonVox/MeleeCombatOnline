@@ -69,6 +69,13 @@ private: // Function
 	void JumpToNextSectionImmediately();
 	
 	void SetupWaitInput_Press(bool bAlreadyPressed);
+	
+	void SetNextSection();
+	
+	void BindCallbackToSectionChangedDelegate();
+	
+	UFUNCTION()
+	void HandleMontageSectionChanged(UAnimMontage* Montage, FName SectionName, bool bLooped);
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")

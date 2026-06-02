@@ -42,6 +42,8 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->ReadyForActivation();
 
+	BindCallbackToSectionChangedDelegate();
+
 	// Open Combo Window
 	UAbilityTask_WaitGameplayEvent* Task_Event_OpenComboWindow = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent
 	(
@@ -92,6 +94,8 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	if (bIsActive)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("End Ability"));
+		GetOwningComponentFromActorInfo()->GetAnimInstance()->OnMontageSectionChanged
+								 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 		Name_Section_Next = NAME_None;
 	}
 
@@ -115,13 +119,15 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 {
 	SetupWaitInput_Press(false);
-	
+
 	UE_LOG(LogTemp, Warning, TEXT("HandleInput_Press"));
-	
+
 	if (Name_Section_Next != NAME_None)
 	{
-		JumpToNextSectionImmediately();
-		Name_Section_Next = NAME_None;
+		SetNextSection();
+		// JumpToNextSectionImmediately();
+		// Name_Section_Next = NAME_None;
+		// montage section changed delegate
 	}
 }
 
@@ -147,6 +153,55 @@ void UGA_BasicAttack::JumpToNextSectionImmediately()
 	MyAnimInstance->Montage_JumpToSection(Name_Section_Next, AttackMontage);
 }
 
+void UGA_BasicAttack::SetNextSection()
+{
+	if (Name_Section_Next == NAME_None)
+	{
+		return;
+	}
+	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
+	if (MeshComp == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* MyAnimInstance = MeshComp->GetAnimInstance();
+	if (MyAnimInstance == nullptr)
+	{
+		return;
+	}
+
+	MyAnimInstance->Montage_SetNextSection
+	(
+		MyAnimInstance->Montage_GetCurrentSection(),
+		Name_Section_Next,
+		AttackMontage
+	);
+}
+
+void UGA_BasicAttack::BindCallbackToSectionChangedDelegate()
+{
+	GetOwningComponentFromActorInfo()->GetAnimInstance()->OnMontageSectionChanged
+	                                 .AddUniqueDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
+}
+
+void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName SectionName, bool bLooped)
+{
+	Name_Section_Next = NAME_None;
+	
+	// just change to the new section
+	// and combo window not open yet
+	// Animinstance: next section name: Name_none
+	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
+	MyAnimInstance->Montage_SetNextSection
+	(
+		MyAnimInstance->Montage_GetCurrentSection(),
+		NAME_None,
+		AttackMontage
+	);
+	
+}
+
 void UGA_BasicAttack::SetupWaitInput_Press(bool bAlreadyPressed)
 {
 	// Input Press
@@ -155,6 +210,7 @@ void UGA_BasicAttack::SetupWaitInput_Press(bool bAlreadyPressed)
 	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::HandleInput_Press);
 	Task_InputPress->ReadyForActivation();
 }
+
 
 void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
 {
