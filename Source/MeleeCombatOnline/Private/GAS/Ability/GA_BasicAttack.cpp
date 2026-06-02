@@ -100,7 +100,7 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 {
 	SectionName_Next = EventData.EventTag.GetTagLeafName();
 
-	// UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpened: %s"), *SectionName_Next.ToString());
 
 	// Input Press
 	UAbilityTask_WaitInputPress* Task_InputPress = UAbilityTask_WaitInputPress::WaitInputPress(this);
@@ -112,7 +112,7 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 {
 	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
 
-	// UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
 
 void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
