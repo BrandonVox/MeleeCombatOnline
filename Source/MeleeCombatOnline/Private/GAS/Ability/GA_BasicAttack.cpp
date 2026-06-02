@@ -23,7 +23,7 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                       const FGameplayAbilityActivationInfo ActivationInfo,
                                       const FGameplayEventData* TriggerEventData)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("ActivateAbility C++"));
+	UE_LOG(LogTemp, Warning, TEXT("Activate Ability"));
 
 	// Play Attack Montage
 	UAbilityTask_PlayMontageAndWait* Task_PlayMontage_Attack =
@@ -89,7 +89,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 {
 	if (bIsActive)
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("EndAbility C++"));
+		UE_LOG(LogTemp, Warning, TEXT("End Ability"));
 		SectionName_Next = NAME_None;
 	}
 
@@ -113,6 +113,31 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 	SectionName_Next = MCOGameplayTag::Event_BasicAttack_Combo_Open_1.GetTag().GetTagLeafName();
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
+}
+
+void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
+{
+	UE_LOG(LogTemp, Warning, TEXT("InputPressed"));
+
+	// Jump to Section
+	if (SectionName_Next == NAME_None)
+	{
+		return;
+	}
+	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
+	if (MeshComp == nullptr)
+	{
+		return;
+	}
+
+	UAnimInstance* MyAnimInstance = MeshComp->GetAnimInstance();
+	if (MyAnimInstance == nullptr)
+	{
+		return;
+	}
+
+	MyAnimInstance->Montage_JumpToSection(SectionName_Next, AttackMontage);
+	SectionName_Next = NAME_None;
 }
 
 void UGA_BasicAttack::HitDetectionRequested(FGameplayEventData EventData)
@@ -305,29 +330,4 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 		FillTraceEnd = FillTraceStart + (CapsuleDirection * CorrectCapsuleLength);
 		PerformTraceAndProcessHitResults(FillTraceStart, FillTraceEnd, ActorsToIgnore, TraceColor_FillGap);
 	}
-}
-
-void UGA_BasicAttack::ComboInputPressed(float TimeWaited)
-{
-	UE_LOG(LogTemp, Warning, TEXT("InputPressed"));
-
-	// Jump to Section
-	if (SectionName_Next == NAME_None)
-	{
-		return;
-	}
-	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
-	if (MeshComp == nullptr)
-	{
-		return;
-	}
-
-	UAnimInstance* MyAnimInstance = MeshComp->GetAnimInstance();
-	if (MyAnimInstance == nullptr)
-	{
-		return;
-	}
-
-	MyAnimInstance->Montage_JumpToSection(SectionName_Next, AttackMontage);
-	SectionName_Next = NAME_None;
 }
