@@ -201,7 +201,7 @@ void UGA_BasicAttack::ProcessHitResults(const TArray<FHitResult>& GivenHitResult
 			continue;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
+		// UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
 		// Apply Damage Effect to Victim Actor
 		FGameplayEffectSpecHandle EffectSpecHandle_Damage = MakeOutgoingGameplayEffectSpec(Class_GE_Damage);
 
@@ -279,7 +279,7 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 	{
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
+	// UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
 
 	FVector FillDirection_End = (CurrentTraceEnd - PrevTraceEnd).GetSafeNormal();
 

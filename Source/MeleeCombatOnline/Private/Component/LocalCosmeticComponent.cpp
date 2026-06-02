@@ -67,7 +67,7 @@ void ULocalCosmeticComponent::BeginPlay()
 
 void ULocalCosmeticComponent::HandleHitDetection_Begin(const FGameplayEventData* EventData)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ Begin"));
+	// // UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ Begin"));
 	PlaySound_WeaponSwing();
 	SpawnWeaponTrailFX();
 	ActorsHitThisSwing.Empty();
@@ -82,13 +82,13 @@ void ULocalCosmeticComponent::HandleHitDetection_Begin(const FGameplayEventData*
 
 void ULocalCosmeticComponent::HandleHitDetection_End(const FGameplayEventData* EventData)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ End"));
+	// // UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ End"));
 	ActorsHitThisSwing.Empty();
 }
 
 void ULocalCosmeticComponent::HandleHitDetection_Tick(const FGameplayEventData* EventData)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ Tick"));
+	// // UE_LOG(LogTemp, Warning, TEXT("Local Cosmetic: Hit Detection _ Tick"));
 	USkeletalMeshComponent* MeshComp = GetOwnerMeshComponent();
 
 	if (MeshComp == nullptr)
@@ -126,7 +126,7 @@ void ULocalCosmeticComponent::ProcessHitResults(const TArray<FHitResult>& GivenH
 			continue;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
+		// UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
 		// Play Local Gameplay Cue
 		UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
 		FGameplayCueParameters GameplayCueParam_Impact;
@@ -186,7 +186,7 @@ void ULocalCosmeticComponent::FillTraceGap(FVector CurrentTraceStart, FVector Cu
 	{
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
+	// UE_LOG(LogTemp, Warning, TEXT("FillCount = %d"), FillCount);
 
 	FVector FillDirection_End = (CurrentTraceEnd - PrevTraceEnd).GetSafeNormal();
 
