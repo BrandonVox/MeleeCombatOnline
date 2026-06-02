@@ -117,12 +117,7 @@ void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 	SetupWaitInput_Press(false);
 	
 	UE_LOG(LogTemp, Warning, TEXT("HandleInput_Press"));
-
-	// we only jump to next section
-	// only when we are in combo window
-	// by checking the next section name
-	// 1. the name of the next section
-	// 2. if we're in combo window
+	
 	if (Name_Section_Next != NAME_None)
 	{
 		JumpToNextSectionImmediately();
