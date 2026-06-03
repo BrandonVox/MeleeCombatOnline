@@ -134,8 +134,12 @@ void AMCOCharacter_Player::Input_Triggered_Move(const FInputActionValue& InputAc
 	AddMovementInput(ForwardDirection, InputValue2D.Y);
 }
 
-void AMCOCharacter_Player::Input_Triggered_Attack()
+void AMCOCharacter_Player::Input_Triggered_Attack(const FInputActionValue& InputActionValue)
 {
+	
+	bool bPressed = InputActionValue.Get<bool>();
+	
+	
 #if ENABLE_VISUAL_LOG
 	UE_VLOG(
 		this,
@@ -145,8 +149,20 @@ void AMCOCharacter_Player::Input_Triggered_Attack()
 	);
 #endif
 
-	if (MCO_ASC)
+	if (bPressed)
 	{
-		MCO_ASC->AbilityLocalInputPressed(1);
+		// Press
+		if (MCO_ASC)
+		{
+			MCO_ASC->AbilityLocalInputPressed(1);
+		}
+	}
+	else
+	{
+		// Release
+		if (MCO_ASC)
+		{
+			MCO_ASC->AbilityLocalInputReleased(1);
+		}
 	}
 }

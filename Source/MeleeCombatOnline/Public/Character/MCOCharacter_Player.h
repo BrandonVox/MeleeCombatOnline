@@ -31,7 +31,7 @@ private: // Function
 	void Input_Triggered_Jump();
 	void Input_Triggered_Look(const FInputActionValue& InputActionValue);
 	void Input_Triggered_Move(const FInputActionValue& InputActionValue);
-	void Input_Triggered_Attack();
+	void Input_Triggered_Attack(const FInputActionValue& InputActionValue);
 	
 private: // Property
 	UPROPERTY(VisibleDefaultsOnly)

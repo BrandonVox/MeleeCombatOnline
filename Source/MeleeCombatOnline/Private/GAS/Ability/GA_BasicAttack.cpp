@@ -7,6 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
+#include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
 #include "Data/DataAsset_Trace.h"
 #include "GAS/MCOGameplayTag.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -85,6 +86,7 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 
 	SetupWaitInput_Press(true);
+	SetupWaitInput_Release();
 }
 
 void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -97,6 +99,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 		GetOwningComponentFromActorInfo()->GetAnimInstance()->OnMontageSectionChanged
 								 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 		Name_Section_Next = NAME_None;
+		bIsPressing = false;
 	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -119,6 +122,7 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 {
 	SetupWaitInput_Press(false);
+	bIsPressing = true;
 
 	UE_LOG(LogTemp, Warning, TEXT("HandleInput_Press"));
 
@@ -129,6 +133,14 @@ void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 		// Name_Section_Next = NAME_None;
 		// montage section changed delegate
 	}
+}
+
+void UGA_BasicAttack::HandleInput_Release(float TimeHeld)
+{
+	SetupWaitInput_Release();
+	bIsPressing = false;
+
+	UE_LOG(LogTemp, Warning, TEXT("HandleInput_Release"));
 }
 
 void UGA_BasicAttack::JumpToNextSectionImmediately()
@@ -204,11 +216,18 @@ void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName S
 
 void UGA_BasicAttack::SetupWaitInput_Press(bool bAlreadyPressed)
 {
-	// Input Press
 	UAbilityTask_WaitInputPress* Task_InputPress =
 		UAbilityTask_WaitInputPress::WaitInputPress(this, bAlreadyPressed);
 	Task_InputPress->OnPress.AddDynamic(this, &UGA_BasicAttack::HandleInput_Press);
 	Task_InputPress->ReadyForActivation();
+}
+
+void UGA_BasicAttack::SetupWaitInput_Release()
+{
+	UAbilityTask_WaitInputRelease* Task_InputRelease =
+		UAbilityTask_WaitInputRelease::WaitInputRelease(this);
+	Task_InputRelease->OnRelease.AddDynamic(this, &UGA_BasicAttack::HandleInput_Release);
+	Task_InputRelease->ReadyForActivation();
 }
 
 

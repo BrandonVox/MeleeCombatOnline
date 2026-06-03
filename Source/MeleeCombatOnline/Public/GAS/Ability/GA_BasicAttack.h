@@ -66,9 +66,13 @@ private: // Function
 	UFUNCTION()
 	void HandleInput_Press(float TimeWaited);
 	
+	UFUNCTION()
+	void HandleInput_Release(float TimeHeld);
+	
 	void JumpToNextSectionImmediately();
 	
 	void SetupWaitInput_Press(bool bAlreadyPressed);
+	void SetupWaitInput_Release();
 	
 	void SetNextSection();
 	
@@ -80,6 +84,8 @@ private: // Function
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+	bool bIsPressing = false;
 
 	FName Name_Section_Next = NAME_None;
 	
