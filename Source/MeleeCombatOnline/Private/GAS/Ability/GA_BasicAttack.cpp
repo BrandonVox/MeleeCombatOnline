@@ -129,9 +129,6 @@ void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 	if (Name_Section_Next != NAME_None)
 	{
 		SetNextSection();
-		// JumpToNextSectionImmediately();
-		// Name_Section_Next = NAME_None;
-		// montage section changed delegate
 	}
 }
 
@@ -201,9 +198,6 @@ void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName S
 {
 	Name_Section_Next = NAME_None;
 	
-	// just change to the new section
-	// and combo window not open yet
-	// Animinstance: next section name: Name_none
 	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
 	MyAnimInstance->Montage_SetNextSection
 	(
