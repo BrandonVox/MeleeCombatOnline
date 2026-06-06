@@ -97,9 +97,10 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	{
 		UE_LOG(LogTemp, Warning, TEXT("End Ability"));
 		GetOwningComponentFromActorInfo()->GetAnimInstance()->OnMontageSectionChanged
-								 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
+		                                 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 		Name_Section_Next = NAME_None;
 		bIsPressing = false;
+		bConfirmPressInComboWindow = false;
 	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -114,14 +115,14 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 
 void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 {
-	
 	// check
-	if (bIsPressing && Name_Section_Next != NAME_None)
+	if ((bIsPressing || bConfirmPressInComboWindow) && Name_Section_Next != NAME_None)
 	{
 		SetNextSection();
 	}
-	
+
 	Name_Section_Next = NAME_None;
+	bConfirmPressInComboWindow = false;
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
@@ -135,7 +136,8 @@ void UGA_BasicAttack::HandleInput_Press(float TimeWaited)
 
 	if (Name_Section_Next != NAME_None)
 	{
-		SetNextSection();
+		// SetNextSection();
+		bConfirmPressInComboWindow = true;
 	}
 }
 
@@ -204,7 +206,8 @@ void UGA_BasicAttack::BindCallbackToSectionChangedDelegate()
 void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName SectionName, bool bLooped)
 {
 	Name_Section_Next = NAME_None;
-	
+	bConfirmPressInComboWindow = false;
+
 	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
 	MyAnimInstance->Montage_SetNextSection
 	(
@@ -212,7 +215,6 @@ void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName S
 		NAME_None,
 		AttackMontage
 	);
-	
 }
 
 void UGA_BasicAttack::SetupWaitInput_Press(bool bAlreadyPressed)

@@ -86,6 +86,7 @@ private: // Property
 	TObjectPtr<UAnimMontage> AttackMontage;
 	
 	bool bIsPressing = false;
+	bool bConfirmPressInComboWindow = false;
 
 	FName Name_Section_Next = NAME_None;
 	
