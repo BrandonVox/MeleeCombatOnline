@@ -114,6 +114,13 @@ void UGA_BasicAttack::ComboWindowOpened(FGameplayEventData EventData)
 
 void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 {
+	
+	// check
+	if (bIsPressing && Name_Section_Next != NAME_None)
+	{
+		SetNextSection();
+	}
+	
 	Name_Section_Next = NAME_None;
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
