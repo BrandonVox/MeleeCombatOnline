@@ -80,10 +80,16 @@ private: // Function
 	
 	UFUNCTION()
 	void HandleMontageSectionChanged(UAnimMontage* Montage, FName SectionName, bool bLooped);
+	
+	UFUNCTION()
+	void HandleMontageBlendOut_Attack();
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
-	TObjectPtr<UAnimMontage> AttackMontage;
+	TObjectPtr<UAnimMontage> Montage_Attack;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
+	TObjectPtr<UAnimMontage> Montage_Recovery;
 	
 	bool bIsPressing = false;
 	bool bConfirmPressInComboWindow = false;

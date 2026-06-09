@@ -31,14 +31,14 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
 			NAME_None,
-			AttackMontage,
+			Montage_Attack,
 			1.f,
 			NAME_None,
 			true
 		);
 
 	Task_PlayMontage_Attack->OnCompleted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
-	Task_PlayMontage_Attack->OnBlendOut.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
+	Task_PlayMontage_Attack->OnBlendOut.AddDynamic(this, &UGA_BasicAttack::HandleMontageBlendOut_Attack);
 	Task_PlayMontage_Attack->OnInterrupted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
 	Task_PlayMontage_Attack->ReadyForActivation();
@@ -168,7 +168,7 @@ void UGA_BasicAttack::JumpToNextSectionImmediately()
 		return;
 	}
 
-	MyAnimInstance->Montage_JumpToSection(Name_Section_Next, AttackMontage);
+	MyAnimInstance->Montage_JumpToSection(Name_Section_Next, Montage_Attack);
 }
 
 void UGA_BasicAttack::SetNextSection()
@@ -193,7 +193,7 @@ void UGA_BasicAttack::SetNextSection()
 	(
 		MyAnimInstance->Montage_GetCurrentSection(),
 		Name_Section_Next,
-		AttackMontage
+		Montage_Attack
 	);
 }
 
@@ -213,7 +213,7 @@ void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName S
 	(
 		MyAnimInstance->Montage_GetCurrentSection(),
 		NAME_None,
-		AttackMontage
+		Montage_Attack
 	);
 }
 
@@ -424,4 +424,21 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 		FillTraceEnd = FillTraceStart + (CapsuleDirection * CorrectCapsuleLength);
 		PerformTraceAndProcessHitResults(FillTraceStart, FillTraceEnd, ActorsToIgnore, TraceColor_FillGap);
 	}
+}
+
+void UGA_BasicAttack::HandleMontageBlendOut_Attack()
+{
+	// play recovery montage
+	UAbilityTask_PlayMontageAndWait* Task_Montage_Recovery =
+		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
+		(
+			this,
+			NAME_None,
+			Montage_Recovery,
+			1.f,
+			NAME_None,
+			false
+		);
+	Task_Montage_Recovery->ReadyForActivation();
+	K2_EndAbility();
 }
