@@ -83,6 +83,8 @@ private: // Function
 	
 	UFUNCTION()
 	void HandleMontageBlendOut_Attack();
+	
+	FName FindCorrectSectionName_Recovery() const;
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
@@ -125,4 +127,5 @@ private: // Property
 
 	FVector PrevTraceStart;
 	FVector PrevTraceEnd;
+	FName Name_Section_ForRecovery = NAME_None;
 };

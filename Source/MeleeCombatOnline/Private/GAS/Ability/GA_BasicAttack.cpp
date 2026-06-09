@@ -123,6 +123,9 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 
 	Name_Section_Next = NAME_None;
 	bConfirmPressInComboWindow = false;
+	
+	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
+	Name_Section_ForRecovery = MyAnimInstance->Montage_GetCurrentSection(Montage_Attack);
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
 }
@@ -191,7 +194,7 @@ void UGA_BasicAttack::SetNextSection()
 
 	MyAnimInstance->Montage_SetNextSection
 	(
-		MyAnimInstance->Montage_GetCurrentSection(),
+		MyAnimInstance->Montage_GetCurrentSection(Montage_Attack),
 		Name_Section_Next,
 		Montage_Attack
 	);
@@ -211,7 +214,7 @@ void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName S
 	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
 	MyAnimInstance->Montage_SetNextSection
 	(
-		MyAnimInstance->Montage_GetCurrentSection(),
+		MyAnimInstance->Montage_GetCurrentSection(Montage_Attack),
 		NAME_None,
 		Montage_Attack
 	);
@@ -428,17 +431,38 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 
 void UGA_BasicAttack::HandleMontageBlendOut_Attack()
 {
-	// play recovery montage
-	UAbilityTask_PlayMontageAndWait* Task_Montage_Recovery =
-		UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
-		(
-			this,
-			NAME_None,
-			Montage_Recovery,
-			1.f,
-			NAME_None,
-			false
-		);
-	Task_Montage_Recovery->ReadyForActivation();
+	// when a montage blending out 
+	// the section name -> name none
+	// so we should save the section name before montage blending out
+	// we can do this in function combo window closed
+	FName Name_Section_Recovery = FindCorrectSectionName_Recovery();
+	UE_LOG(LogTemp, Warning, TEXT("Attack Section Name when blending out: %s"), *Name_Section_Recovery.ToString());
+	if (Name_Section_Recovery != NAME_None)
+	{
+		UAbilityTask_PlayMontageAndWait* Task_Montage_Recovery =
+			UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
+			(
+				this,
+				NAME_None,
+				Montage_Recovery,
+				1.f,
+				Name_Section_Recovery,
+				false
+			);
+		Task_Montage_Recovery->ReadyForActivation();
+	}
+
+
 	K2_EndAbility();
+}
+
+FName UGA_BasicAttack::FindCorrectSectionName_Recovery() const
+{
+	// check if recovery montage has this section name
+	if (Montage_Recovery->IsValidSectionName(Name_Section_ForRecovery))
+	{
+		return Name_Section_ForRecovery;
+	}
+	
+	return NAME_None;
 }
