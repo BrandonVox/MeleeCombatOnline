@@ -84,9 +84,15 @@ private: // Function
 	UFUNCTION()
 	void HandleMontageBlendOut_Attack();
 	
+	UFUNCTION()
+	void HandleMontageInterrupted_Attack();
+	
 	FName FindCorrectSectionName_Recovery() const;
 	
 	UAnimInstance* GetAnimInstance() const;
+	
+	UFUNCTION()
+	void EndAbility_Safe();
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")

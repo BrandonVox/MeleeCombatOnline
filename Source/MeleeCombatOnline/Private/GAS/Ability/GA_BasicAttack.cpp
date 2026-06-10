@@ -37,10 +37,10 @@ void UGA_BasicAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			true
 		);
 
-	Task_PlayMontage_Attack->OnCompleted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
+	Task_PlayMontage_Attack->OnCompleted.AddDynamic(this, &UGA_BasicAttack::EndAbility_Safe);
 	Task_PlayMontage_Attack->OnBlendOut.AddDynamic(this, &UGA_BasicAttack::HandleMontageBlendOut_Attack);
-	Task_PlayMontage_Attack->OnInterrupted.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
-	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::K2_EndAbility);
+	Task_PlayMontage_Attack->OnInterrupted.AddDynamic(this, &UGA_BasicAttack::HandleMontageInterrupted_Attack);
+	Task_PlayMontage_Attack->OnCancelled.AddDynamic(this, &UGA_BasicAttack::EndAbility_Safe);
 	Task_PlayMontage_Attack->ReadyForActivation();
 
 	BindCallbackToSectionChangedDelegate();
@@ -97,7 +97,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	{
 		UE_LOG(LogTemp, Warning, TEXT("End Ability"));
 		GetAnimInstance()->OnMontageSectionChanged
-		                                 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
+		                 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 		Name_Section_Next = NAME_None;
 		bIsPressing = false;
 		bConfirmPressInComboWindow = false;
@@ -123,7 +123,7 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 
 	Name_Section_Next = NAME_None;
 	bConfirmPressInComboWindow = false;
-	
+
 	UAnimInstance* MyAnimInstance = GetAnimInstance();
 	Name_Section_ForRecovery = MyAnimInstance->Montage_GetCurrentSection(Montage_Attack);
 
@@ -203,7 +203,7 @@ void UGA_BasicAttack::SetNextSection()
 void UGA_BasicAttack::BindCallbackToSectionChangedDelegate()
 {
 	GetAnimInstance()->OnMontageSectionChanged
-	                                 .AddUniqueDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
+	                 .AddUniqueDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 }
 
 void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName SectionName, bool bLooped)
@@ -431,12 +431,28 @@ void UGA_BasicAttack::FillTraceGap(FVector CurrentTraceStart, FVector CurrentTra
 
 void UGA_BasicAttack::HandleMontageBlendOut_Attack()
 {
-	// when a montage blending out 
-	// the section name -> name none
-	// so we should save the section name before montage blending out
-	// we can do this in function combo window closed
+	// Client prediection or local predicted
+	// client play montage first
+	// client blendout first
+	// client call end ability first
+	// client replicate end ability to server
+	// send serverRPC to server to end ability
+	// server might end ability before Montage BlendOut
+	// fix by not replicate from client -> server
+	// only want to replicate from server -> client
+	// not use EndAbility_Safe
+	// custom endability
+	if (K2_HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Server: HandleMontageBlendOut_Attack"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client: HandleMontageBlendOut_Attack"));
+	}
+	
 	FName Name_Section_Recovery = FindCorrectSectionName_Recovery();
-	UE_LOG(LogTemp, Warning, TEXT("Attack Section Name when blending out: %s"), *Name_Section_Recovery.ToString());
+
 	if (Name_Section_Recovery != NAME_None)
 	{
 		UAbilityTask_PlayMontageAndWait* Task_Montage_Recovery =
@@ -453,7 +469,20 @@ void UGA_BasicAttack::HandleMontageBlendOut_Attack()
 	}
 
 
-	K2_EndAbility();
+	EndAbility_Safe();
+}
+
+void UGA_BasicAttack::HandleMontageInterrupted_Attack()
+{
+	if (K2_HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Server: HandleMontageInterrupted_Attack"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client: HandleMontageInterrupted_Attack"));
+	}
+	EndAbility_Safe();
 }
 
 FName UGA_BasicAttack::FindCorrectSectionName_Recovery() const
@@ -463,18 +492,31 @@ FName UGA_BasicAttack::FindCorrectSectionName_Recovery() const
 	{
 		return Name_Section_ForRecovery;
 	}
-	
+
 	return NAME_None;
 }
 
 UAnimInstance* UGA_BasicAttack::GetAnimInstance() const
 {
 	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
-	
+
 	if (MeshComp == nullptr)
 	{
 		return nullptr;
 	}
-	
+
 	return MeshComp->GetAnimInstance();
+}
+
+void UGA_BasicAttack::EndAbility_Safe()
+{
+	ensure(CurrentActorInfo);
+
+	bool bReplicateEndAbility = false;
+	if (K2_HasAuthority())
+	{
+		bReplicateEndAbility = true;
+	}
+	bool bWasCancelled = false;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
