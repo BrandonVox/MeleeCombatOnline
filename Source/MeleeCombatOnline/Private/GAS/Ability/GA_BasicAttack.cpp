@@ -96,7 +96,7 @@ void UGA_BasicAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	if (bIsActive)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("End Ability"));
-		GetOwningComponentFromActorInfo()->GetAnimInstance()->OnMontageSectionChanged
+		GetAnimInstance()->OnMontageSectionChanged
 		                                 .RemoveDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 		Name_Section_Next = NAME_None;
 		bIsPressing = false;
@@ -124,7 +124,7 @@ void UGA_BasicAttack::ComboWindowClosed(FGameplayEventData EventData)
 	Name_Section_Next = NAME_None;
 	bConfirmPressInComboWindow = false;
 	
-	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
+	UAnimInstance* MyAnimInstance = GetAnimInstance();
 	Name_Section_ForRecovery = MyAnimInstance->Montage_GetCurrentSection(Montage_Attack);
 
 	UE_LOG(LogTemp, Warning, TEXT("ComboWindowClosed"));
@@ -202,7 +202,7 @@ void UGA_BasicAttack::SetNextSection()
 
 void UGA_BasicAttack::BindCallbackToSectionChangedDelegate()
 {
-	GetOwningComponentFromActorInfo()->GetAnimInstance()->OnMontageSectionChanged
+	GetAnimInstance()->OnMontageSectionChanged
 	                                 .AddUniqueDynamic(this, &UGA_BasicAttack::HandleMontageSectionChanged);
 }
 
@@ -211,7 +211,7 @@ void UGA_BasicAttack::HandleMontageSectionChanged(UAnimMontage* Montage, FName S
 	Name_Section_Next = NAME_None;
 	bConfirmPressInComboWindow = false;
 
-	UAnimInstance* MyAnimInstance = GetOwningComponentFromActorInfo()->GetAnimInstance();
+	UAnimInstance* MyAnimInstance = GetAnimInstance();
 	MyAnimInstance->Montage_SetNextSection
 	(
 		MyAnimInstance->Montage_GetCurrentSection(Montage_Attack),
@@ -465,4 +465,16 @@ FName UGA_BasicAttack::FindCorrectSectionName_Recovery() const
 	}
 	
 	return NAME_None;
+}
+
+UAnimInstance* UGA_BasicAttack::GetAnimInstance() const
+{
+	USkeletalMeshComponent* MeshComp = GetOwningComponentFromActorInfo();
+	
+	if (MeshComp == nullptr)
+	{
+		return nullptr;
+	}
+	
+	return MeshComp->GetAnimInstance();
 }

@@ -85,6 +85,8 @@ private: // Function
 	void HandleMontageBlendOut_Attack();
 	
 	FName FindCorrectSectionName_Recovery() const;
+	
+	UAnimInstance* GetAnimInstance() const;
 
 private: // Property
 	UPROPERTY(EditDefaultsOnly, Category = "MCO Settings")
