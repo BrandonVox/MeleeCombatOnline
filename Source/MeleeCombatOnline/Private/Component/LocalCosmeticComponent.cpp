@@ -28,7 +28,7 @@ ULocalCosmeticComponent::ULocalCosmeticComponent()
 void ULocalCosmeticComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// dedicated server does not render game 
 	// skip cosmetic fx
 	// net mode
@@ -36,9 +36,9 @@ void ULocalCosmeticComponent::BeginPlay()
 	{
 		return;
 	}
-	
+
 	GetOwnerMeshComponent();
-	
+
 
 	IAbilitySystemInterface* OwnerASI = GetOwner<IAbilitySystemInterface>();
 
@@ -128,19 +128,8 @@ void ULocalCosmeticComponent::ProcessHitResults(const TArray<FHitResult>& GivenH
 
 		// UE_LOG(LogTemp, Warning, TEXT("Victim Actor Name: %s"), *VictimActor->GetName());
 		// Play Local Gameplay Cue
-		UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
-		FGameplayCueParameters GameplayCueParam_Impact;
-		GameplayCueParam_Impact.Location = HitResult.ImpactPoint;
-		if (GCM)
-		{
-			GCM->HandleGameplayCue
-			(
-				VictimActor,
-				MCOGameplayTag::GameplayCue_BasicAttack_Hit_Impact_Aurora,
-				EGameplayCueEvent::Executed,
-				GameplayCueParam_Impact
-			);
-		}
+		PerformHitImpactFX(VictimActor, HitResult);
+		PerformHitReactMontage(VictimActor);
 
 		ActorsHitThisSwing.Add(VictimActor);
 	}
@@ -258,8 +247,8 @@ FVector ULocalCosmeticComponent::GetLocation_Weapon_Middle() const
 
 	FVector Location_Weapon_Start = MeshComp->GetSocketLocation(TraceData->SocketName_Start);
 	FVector Location_Weapon_End = MeshComp->GetSocketLocation(TraceData->SocketName_End);
-	
-	return (Location_Weapon_Start + Location_Weapon_End ) * 0.5f;
+
+	return (Location_Weapon_Start + Location_Weapon_End) * 0.5f;
 }
 
 void ULocalCosmeticComponent::SpawnWeaponTrailFX()
@@ -270,7 +259,7 @@ void ULocalCosmeticComponent::SpawnWeaponTrailFX()
 	SpawnParams.AttachPointName = Name_Socket_Root;
 	SpawnParams.LocationType = EAttachLocation::KeepRelativeOffset;
 
-	NiagaraComponent_WeaponTrail =   UNiagaraFunctionLibrary::SpawnSystemAttachedWithParams(SpawnParams);
+	NiagaraComponent_WeaponTrail = UNiagaraFunctionLibrary::SpawnSystemAttachedWithParams(SpawnParams);
 }
 
 void ULocalCosmeticComponent::UpdateWeaponTrailFX(FVector NewLocation_Start, FVector NewLocation_End)
@@ -280,5 +269,51 @@ void ULocalCosmeticComponent::UpdateWeaponTrailFX(FVector NewLocation_Start, FVe
 		NiagaraComponent_WeaponTrail->SetVectorParameter(FName(TEXT("Location_Weapon_Start")), NewLocation_Start);
 		NiagaraComponent_WeaponTrail->SetVectorParameter(FName(TEXT("Location_Weapon_End")), NewLocation_End);
 	}
+}
 
+void ULocalCosmeticComponent::PerformHitImpactFX(AActor* InActor, const FHitResult& InHitResult)
+{
+	UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
+	FGameplayCueParameters GameplayCueParam_Impact;
+	GameplayCueParam_Impact.Location = InHitResult.ImpactPoint;
+	if (GCM)
+	{
+		GCM->HandleGameplayCue
+		(
+			InActor,
+			MCOGameplayTag::GameplayCue_BasicAttack_Hit_Impact_Aurora,
+			EGameplayCueEvent::Executed,
+			GameplayCueParam_Impact
+		);
+	}
+}
+
+void ULocalCosmeticComponent::PerformHitReactMontage(AActor* InActor)
+{
+	UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
+	FGameplayCueParameters CueParams_HitReact;
+
+	CueParams_HitReact.Location = GetOwnerLocation();
+	if (GCM)
+	{
+		GCM->HandleGameplayCue
+		(
+			InActor,
+			MCOGameplayTag::GameplayCue_HitReact_Aurora,
+			EGameplayCueEvent::Executed,
+			CueParams_HitReact
+		);
+	}
+}
+
+FVector ULocalCosmeticComponent::GetOwnerLocation() const
+{
+	AActor* MyOwner = GetOwner();
+	
+	if (MyOwner == nullptr)
+	{
+		return FVector::ZeroVector;
+	}
+
+	return MyOwner->GetActorLocation();
 }

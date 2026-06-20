@@ -54,6 +54,12 @@ private: // Function
 
 	void SpawnWeaponTrailFX();
 	void UpdateWeaponTrailFX(FVector NewLocation_Start, FVector NewLocation_End);
+	
+	void PerformHitImpactFX(AActor* InActor, const FHitResult& InHitResult);
+	
+	FVector GetOwnerLocation() const;
+	
+	void PerformHitReactMontage(AActor* InActor);
 
 private: // Property
 	UPROPERTY()

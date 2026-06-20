@@ -27,4 +27,7 @@ namespace MCOGameplayTag
 	
 	UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Sound_Swing_Sword, TEXT("GameplayCue.Sound.Swing.Sword"));
 	
+	
+	UE_DEFINE_GAMEPLAY_TAG(GameplayCue_HitReact_Aurora, TEXT("GameplayCue.HitReact.Aurora"));
+	
 }
