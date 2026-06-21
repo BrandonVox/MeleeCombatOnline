@@ -292,8 +292,8 @@ void ULocalCosmeticComponent::PerformHitReactMontage(AActor* InActor)
 {
 	UGameplayCueManager* GCM = UAbilitySystemGlobals::Get().GetGameplayCueManager();
 	FGameplayCueParameters CueParams_HitReact;
-
-	CueParams_HitReact.Location = GetOwnerLocation();
+	
+	CueParams_HitReact.Location = GetOwnerForwardVector();
 	if (GCM)
 	{
 		GCM->HandleGameplayCue
@@ -306,14 +306,14 @@ void ULocalCosmeticComponent::PerformHitReactMontage(AActor* InActor)
 	}
 }
 
-FVector ULocalCosmeticComponent::GetOwnerLocation() const
+FVector ULocalCosmeticComponent::GetOwnerForwardVector() const
 {
 	AActor* MyOwner = GetOwner();
 	
 	if (MyOwner == nullptr)
 	{
-		return FVector::ZeroVector;
+		return FVector::ForwardVector;
 	}
 
-	return MyOwner->GetActorLocation();
+	return MyOwner->GetActorForwardVector();
 }

@@ -57,7 +57,7 @@ private: // Function
 	
 	void PerformHitImpactFX(AActor* InActor, const FHitResult& InHitResult);
 	
-	FVector GetOwnerLocation() const;
+	FVector GetOwnerForwardVector() const;
 	
 	void PerformHitReactMontage(AActor* InActor);
 
